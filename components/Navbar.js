@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-export default function Navbar() {
+export default function Navbar({ handleModal }) {
   return (
     <div className="bg-gray-900">
       <header className="flex items-center justify-between py-3 text-white container mx-auto lg:w-1/2 px-4 lg:px-0">
@@ -8,7 +8,7 @@ export default function Navbar() {
           <a className="hover:text-blue-400">Crypto Numismatics</a>
         </Link>
         <div>
-          <button className="mr-4 rounded inline-flex items-center hover:text-blue-400">
+          <button className="mr-4 rounded inline-flex items-center hover:text-blue-400" onClick={() => handleModal('login')}>
             <svg className="fill-current w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
               <path
                 fill="currentColor"
@@ -17,7 +17,7 @@ export default function Navbar() {
             </svg>
             Log in
           </button>
-          <button className="rounded inline-flex items-center hover:text-blue-400">
+          <button className="rounded inline-flex items-center hover:text-blue-400" onClick={() => handleModal('signup')}>
             <svg className="fill-current w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
               <path
                 fill="currentColor"

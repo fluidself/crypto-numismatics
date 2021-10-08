@@ -1,13 +1,16 @@
-import Head from 'next/head';
-
+// import Head from 'next/head';
+import { useState } from 'react';
 import Navbar from '../components/Navbar';
-import LoginForm from '../components/LoginForm';
 import Modal from '../components/Modal';
+import LoginForm from '../components/LoginForm';
+import SignupForm from '../components/SignupForm';
 
 export default function Home() {
+  const [modal, setModal] = useState('');
+
   return (
     <div className="h-screen bg-gray-800">
-      <Navbar />
+      <Navbar handleModal={setModal} />
       <div className="text-white container mx-auto text-center mt-48">
         <h1 className="text-4xl mb-2 font-light">All your cryptocurrencies in one place</h1>
         <p>
@@ -18,9 +21,12 @@ export default function Home() {
           <button className="w-48 mb-4 py-2 text-sm tracking-wider rounded-sm bg-blue-400 uppercase">Create account</button>
           <button className="w-48 mb-4 py-2 text-sm tracking-wider border rounded-sm uppercase">View demo</button>
         </div>
-        <Modal>
-          <LoginForm />
-        </Modal>
+        {modal && (
+          <Modal type={modal} handleModal={setModal}>
+            {modal === 'login' && <LoginForm />}
+            {modal === 'signup' && <SignupForm />}
+          </Modal>
+        )}
       </div>
     </div>
   );
