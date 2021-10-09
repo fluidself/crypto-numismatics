@@ -2,7 +2,24 @@ import { useState } from 'react';
 // import { signIn } from 'next-auth/client';
 import { useRouter } from 'next/router';
 
-export default function SignupForm() {
+async function createUser(email, password) {
+  const response = await fetch('/api/auth/signup', {
+    method: 'POST',
+    body: JSON.stringify({ email, password }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || 'Something went wrong!');
+  }
+
+  return data;
+}
+
+export default function SignupForm({ handleModal }) {
   const [formInput, updateFormInput] = useState({ username: '', password: '', confirmPassword: '' });
   const router = useRouter();
 
@@ -10,13 +27,16 @@ export default function SignupForm() {
     event.preventDefault();
     const { username, password } = formInput;
 
-    // const result = await signIn('credentials', { redirect: false, username, password });
-    // console.log(result);
-
-    // if (!result.error) {
-    //   console.log('redirect to dashboard here');
-    //   // router.replace('/dashboard');
-    // }
+    try {
+      const result = await createUser(email, password);
+      console.log(result);
+      // automatically log in here?
+      handleModal('');
+      console.log('redirect to dashboard here');
+      // router.replace('/dashboard');
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (

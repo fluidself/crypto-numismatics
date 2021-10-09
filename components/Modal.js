@@ -5,7 +5,6 @@ export default function Modal({ type, children, handleModal }) {
   const [isBrowser, setIsBrowser] = useState(false);
   const modalWrapperRef = useRef();
 
-  // check if the user has clicked inside or outside the modal
   const backDropHandler = e => {
     if (modalWrapperRef?.current?.contains(e.target)) {
       handleModal('');
@@ -14,9 +13,8 @@ export default function Modal({ type, children, handleModal }) {
 
   useEffect(() => {
     setIsBrowser(true);
-    // attach event listener to the whole windor with our handler
     window.addEventListener('click', backDropHandler);
-    // remove the event listener when the modal is closed
+
     return () => window.removeEventListener('click', backDropHandler);
   }, []);
 

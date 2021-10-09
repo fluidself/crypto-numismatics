@@ -18,13 +18,18 @@ export default function Home() {
           anonymous.
         </p>
         <div className="mt-12 flex flex-col items-center">
-          <button className="w-48 mb-4 py-2 text-sm tracking-wider rounded-sm bg-blue-400 uppercase">Create account</button>
+          <button
+            className="w-48 mb-4 py-2 text-sm tracking-wider rounded-sm bg-blue-400 uppercase"
+            onClick={() => setModal('signup')}
+          >
+            Create account
+          </button>
           <button className="w-48 mb-4 py-2 text-sm tracking-wider border rounded-sm uppercase">View demo</button>
         </div>
         {modal && (
           <Modal type={modal} handleModal={setModal}>
-            {modal === 'login' && <LoginForm />}
-            {modal === 'signup' && <SignupForm />}
+            {modal === 'login' && <LoginForm handleModal={setModal} />}
+            {modal === 'signup' && <SignupForm handleModal={setModal} />}
           </Modal>
         )}
       </div>

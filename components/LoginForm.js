@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { signIn } from 'next-auth/client';
 import { useRouter } from 'next/router';
 
-export default function LoginForm() {
+export default function LoginForm({ handleModal }) {
   const [formInput, updateFormInput] = useState({ username: '', password: '' });
   const router = useRouter();
 
@@ -14,6 +14,7 @@ export default function LoginForm() {
     console.log(result);
 
     if (!result.error) {
+      handleModal('');
       console.log('redirect to dashboard here');
       // router.replace('/dashboard');
     }
