@@ -11,12 +11,11 @@ export default function LoginForm({ handleModal }) {
     const { username, password } = formInput;
 
     const result = await signIn('credentials', { redirect: false, username, password });
-    console.log(result);
+    // console.log(result);
 
     if (!result.error) {
       handleModal('');
-      console.log('redirect to dashboard here');
-      // router.replace('/dashboard');
+      router.replace('/dashboard');
     }
   }
 

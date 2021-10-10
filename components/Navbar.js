@@ -8,12 +8,9 @@ export default function Navbar(props) {
     signOut();
   }
 
-  // console.log(session);
-  // console.log(loading);
-
   return (
     <div className="bg-gray-900">
-      <header className="flex items-center justify-between py-3 text-white container mx-auto xl:w-1/2 px-4 lg:px-0">
+      <header className="flex items-center justify-between py-3 text-white container mx-auto px-4 lg:px-0">
         <Link href="/">
           <a className="hover:text-blue-400">Crypto Numismatics</a>
         </Link>
