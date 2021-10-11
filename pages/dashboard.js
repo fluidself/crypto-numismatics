@@ -1,5 +1,6 @@
 import useSWR from 'swr';
 import Navbar from '../components/Navbar';
+import PieChart from '../components/PieChart';
 import { getPopulatedHoldings, getTotals, round } from '../lib/utils';
 
 const fetcher = (...args) => fetch(...args).then(res => res.json());
@@ -27,20 +28,20 @@ export default function Dashboard() {
   return (
     <div className="h-screen bg-gray-800">
       <Navbar />
-      <div className="text-white container mx-auto text-center mt-4">
+      <div className="text-white container mx-auto text-center mt-4 xl:w-1/2">
         <div className="h-12 bg-gray-900"></div>
-        <div className="bg-gray-700 flex justify-between">
-          <div>
+        <div className="bg-gray-700 flex justify-between py-4 px-4">
+          <div className="text-left">
             <h3 className="uppercase">Portfolio value</h3>
-            <p>${round(totals.total, 2)}</p>
-            <p>(₿{totals.totalBTC})</p>
+            <p className="text-2xl">${round(totals.total, 2)}</p>
+            <p className="text-xl">(₿{totals.totalBTC})</p>
           </div>
-          <div>
-            <h3 className="uppercase text-left">Performance</h3>
+          <div className="text-left">
+            <h3 className="uppercase">Performance</h3>
             <table>
               <tbody>
                 <tr>
-                  <td className="py-2">24 hours</td>
+                  <td className="py-2 pr-2">24 hours</td>
                   <td className={totals.change24HrsPct > 0 ? 'text-green-500' : 'text-red-500'}>
                     ${totals.change24Hrs} ({totals.change24HrsPct}%)
                   </td>
@@ -66,45 +67,47 @@ export default function Dashboard() {
               </tbody>
             </table>
           </div>
-          <div>PIE CHART</div>
+          <div>
+            <PieChart holdings={populatedHoldings} />
+          </div>
         </div>
         <div className="flex">
           <table className="min-w-full">
             <thead className="bg-gray-900 border-b border-white">
               <tr>
-                <th className="py-2">Name</th>
-                <th>Price</th>
-                <th>24 hrs</th>
-                <th>7 days</th>
-                <th>30 days</th>
-                <th>1 year</th>
-                <th>Amount</th>
-                <th>Value</th>
-                <th>Allocation</th>
+                <th className="py-2 pl-4 text-left">Name</th>
+                <th className="pr-4 text-right">Price</th>
+                <th className="pr-4 text-right">24 hrs</th>
+                <th className="pr-4 text-right">7 days</th>
+                <th className="pr-4 text-right">30 days</th>
+                <th className="pr-4 text-right">1 year</th>
+                <th className="pr-4 text-right">Amount</th>
+                <th className="pr-4 text-right">Value</th>
+                <th className="pr-4 text-right">Allocation</th>
                 <th></th>
               </tr>
             </thead>
             <tbody className="bg-gray-700">
               {populatedHoldings.map(holding => (
                 <tr key={holding.id} className="border-b border-white">
-                  <td className="py-2">{holding.name}</td>
-                  <td>${round(holding.price, 2)}</td>
-                  <td className={holding.percent_change_24h > 0 ? 'text-green-500' : 'text-red-500'}>
+                  <td className="py-2 pl-4 text-left">{holding.name}</td>
+                  <td className="pr-4 text-right">${round(holding.price, 2)}</td>
+                  <td className={`pr-4 text-right ${holding.percent_change_24h > 0 ? 'text-green-500' : 'text-red-500'}`}>
                     {holding.percent_change_24h}%
                   </td>
-                  <td className={holding.percent_change_7d > 0 ? 'text-green-500' : 'text-red-500'}>
+                  <td className={`pr-4 text-right ${holding.percent_change_7d > 0 ? 'text-green-500' : 'text-red-500'}`}>
                     {holding.percent_change_7d}%
                   </td>
-                  <td className={holding.percent_change_30d > 0 ? 'text-green-500' : 'text-red-500'}>
+                  <td className={`pr-4 text-right ${holding.percent_change_30d > 0 ? 'text-green-500' : 'text-red-500'}`}>
                     {holding.percent_change_30d}%
                   </td>
-                  <td className={holding.percent_change_365d > 0 ? 'text-green-500' : 'text-red-500'} d>
+                  <td className={`pr-4 text-right ${holding.percent_change_365d > 0 ? 'text-green-500' : 'text-red-500'}`}>
                     {holding.percent_change_365d}%
                   </td>
-                  <td>{holding.amount}</td>
-                  <td>${round(holding.value, 2)}</td>
-                  <td>{round(holding.allocation, 2)}%</td>
-                  <td>
+                  <td className="pr-4 text-right">{holding.amount}</td>
+                  <td className="pr-4 text-right">${round(holding.value, 2)}</td>
+                  <td className="pr-4 text-right">{round(holding.allocation, 2)}%</td>
+                  <td className="w-10 pl-2">
                     <button className="flex hover:text-blue-400">
                       <svg className="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
                         <path

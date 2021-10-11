@@ -31,7 +31,7 @@ export default function LandingPage() {
           </p>
           <div className="mt-12 flex flex-col items-center">
             <button
-              className="w-48 mb-4 py-2 text-sm tracking-wider rounded-sm bg-blue-400 uppercase"
+              className="w-48 mb-4 py-2 text-sm tracking-wider rounded-sm uppercase bg-blue-400 hover:bg-blue-500"
               onClick={() => setModal('signup')}
             >
               Create account

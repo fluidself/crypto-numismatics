@@ -6,8 +6,6 @@ const MOCK_HOLDINGS = [
   // { id: '5fed8b3a92bc314ce585f248', symbol: 'LTC', name: 'Litecoin', amount: 0.6 },
 ];
 
-// https://github.com/thomahau/crypto-numismatics/blob/master/routes/holdings.js
-
 export default async function handler(req, res) {
   const session = await getSession({ req: req });
   if (!session) {
@@ -20,13 +18,10 @@ export default async function handler(req, res) {
 
     res.status(200).json({ holdings: MOCK_HOLDINGS });
   } else if (req.method === 'POST') {
-    // see api-routes-project
     return;
   } else if (req.method === 'PUT') {
-    // see api-routes-project
     return;
   } else if (req.method === 'DELETE') {
-    // see api-routes-project
     return;
   }
 }

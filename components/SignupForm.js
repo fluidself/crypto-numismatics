@@ -30,8 +30,8 @@ export default function SignupForm({ handleModal }) {
     try {
       const result = await createUser(email, password);
       console.log(result);
-      // automatically log in here?
       handleModal('');
+      // automatically log in here?
       console.log('redirect to dashboard here');
       // router.replace('/dashboard');
     } catch (error) {
@@ -83,7 +83,7 @@ export default function SignupForm({ handleModal }) {
       </div>
       <div className="flex items-center justify-between">
         <button
-          className="bg-blue-400 hover:bg-blue-600 text-white py-2 px-4 rounded focus:outline-none focus:shadow-outline uppercase text-sm tracking-wider"
+          className="bg-blue-400 hover:bg-blue-500 text-white py-2 px-4 rounded focus:outline-none focus:shadow-outline uppercase text-sm tracking-wider"
           type="submit"
         >
           Log In

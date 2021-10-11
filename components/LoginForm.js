@@ -50,7 +50,7 @@ export default function LoginForm({ handleModal }) {
       </div>
       <div className="flex items-center justify-between">
         <button
-          className="bg-blue-400 hover:bg-blue-600 text-white py-2 px-4 rounded focus:outline-none focus:shadow-outline uppercase text-sm tracking-wider"
+          className="bg-blue-400 hover:bg-blue-500 text-white py-2 px-4 rounded focus:outline-none focus:shadow-outline uppercase text-sm tracking-wider"
           type="submit"
         >
           Log In
