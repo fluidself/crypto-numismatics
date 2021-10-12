@@ -108,7 +108,6 @@ const MOCK_DATA = [
 ];
 
 export default async function handler(req, res) {
-  // TODO: necessary?
   if (req.method !== 'GET') {
     return;
   }
