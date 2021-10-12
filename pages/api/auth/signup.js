@@ -6,15 +6,14 @@ export default async function handler(req, res) {
     return;
   }
 
-  const data = req.body;
-  const { username, password, passwordconfirm } = data;
-
   const explicityTrimmedFields = ['username', 'password', 'passwordconfirm'];
   const nonTrimmedField = explicityTrimmedFields.find(field => req.body[field].trim() !== req.body[field]);
   if (nonTrimmedField) {
     res.status(422).json({ message: `${nonTrimmedField} cannot start or end with whitespace` });
     return;
   }
+
+  const { username, password, passwordconfirm } = req.body;
 
   if (password.trim().length < 6) {
     res.status(422).json({ message: `Password must be at least 6 characters long` });
