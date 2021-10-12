@@ -1,3 +1,6 @@
+import { useEffect } from 'react';
+import { useRouter } from 'next/router';
+import { useSession } from 'next-auth/client';
 import useSWR from 'swr';
 import Navbar from '../components/Navbar';
 import PieChart from '../components/PieChart';
@@ -6,12 +9,21 @@ import { getPopulatedHoldings, getTotals, round } from '../lib/utils';
 const fetcher = (...args) => fetch(...args).then(res => res.json());
 
 export default function Dashboard() {
+  const [session, loading] = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!session) {
+      router.replace('/');
+    }
+  }, [session]);
+
   const { data: prices, error: pricesError } = useSWR('/api/prices', fetcher);
   const { data: holdings, error: holdingsError } = useSWR('/api/holdings', fetcher);
   let populatedHoldings;
   let totals;
 
-  if (holdings && prices) {
+  if (holdings?.holdings?.length && prices) {
     populatedHoldings = getPopulatedHoldings(holdings.holdings, prices.data);
     totals = getTotals(populatedHoldings, prices.data);
     populatedHoldings.map(holding => (holding.allocation = (100 / totals.total) * holding.value));

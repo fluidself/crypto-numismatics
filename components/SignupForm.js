@@ -1,11 +1,11 @@
 import { useState } from 'react';
-// import { signIn } from 'next-auth/client';
+import { signIn } from 'next-auth/client';
 import { useRouter } from 'next/router';
 
-async function createUser(email, password) {
+async function createUser(username, password, passwordconfirm) {
   const response = await fetch('/api/auth/signup', {
     method: 'POST',
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify({ username, password, passwordconfirm }),
     headers: {
       'Content-Type': 'application/json',
     },
@@ -20,27 +20,30 @@ async function createUser(email, password) {
 }
 
 export default function SignupForm({ handleModal }) {
-  const [formInput, updateFormInput] = useState({ username: '', password: '', confirmPassword: '' });
+  const [formInput, updateFormInput] = useState({ username: '', password: '', passwordconfirm: '' });
+  const [error, setError] = useState(null);
   const router = useRouter();
 
   async function handleSubmit(event) {
+    // TODO: handle loading state
     event.preventDefault();
-    const { username, password } = formInput;
+    const { username, password, passwordconfirm } = formInput;
 
     try {
-      const result = await createUser(email, password);
-      console.log(result);
-      handleModal('');
-      // automatically log in here?
-      console.log('redirect to dashboard here');
-      // router.replace('/dashboard');
+      // const signupResult = await createUser(username, password, passwordconfirm);
+      await createUser(username, password, passwordconfirm);
+      const loginResult = await signIn('credentials', { redirect: false, username, password });
+
+      if (!loginResult.error) {
+        handleModal('');
+        router.replace('/dashboard');
+      }
     } catch (error) {
-      console.log(error);
+      setError(error.message);
     }
   }
 
   return (
-    // <div className="w-full max-w-xs mx-auto">
     <form className="px-2 pt-6 pb-8 mb-4" onSubmit={handleSubmit}>
       <div className="mb-4">
         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="username">
@@ -50,6 +53,8 @@ export default function SignupForm({ handleModal }) {
           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           id="username"
           type="text"
+          required
+          autoFocus
           placeholder="Username"
           value={formInput.username}
           onChange={e => updateFormInput({ ...formInput, username: e.target.value })}
@@ -60,37 +65,38 @@ export default function SignupForm({ handleModal }) {
           Password
         </label>
         <input
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           id="password"
           type="password"
+          required
           placeholder="************"
           value={formInput.password}
           onChange={e => updateFormInput({ ...formInput, password: e.target.value })}
         />
       </div>
       <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="confirm-password">
+        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="passwordconfirm">
           Confirm Password
         </label>
         <input
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-          id="confirm-password"
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-1 leading-tight focus:outline-none focus:shadow-outline"
+          id="passwordconfirm"
           type="password"
+          required
           placeholder="************"
-          value={formInput.confirmPassword}
-          onChange={e => updateFormInput({ ...formInput, confirmPassword: e.target.value })}
+          value={formInput.passwordconfirm}
+          onChange={e => updateFormInput({ ...formInput, passwordconfirm: e.target.value })}
         />
       </div>
+      {error && <p className="text-red-600 mb-2">{error}</p>}
       <div className="flex items-center justify-between">
         <button
           className="bg-blue-400 hover:bg-blue-500 text-white py-2 px-4 rounded focus:outline-none focus:shadow-outline uppercase text-sm tracking-wider"
           type="submit"
         >
-          Log In
+          Create account
         </button>
       </div>
     </form>
-
-    // </div>
   );
 }

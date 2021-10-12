@@ -20,7 +20,7 @@ export default function Modal({ type, children, handleModal }) {
 
   const HEADINGS = {
     login: 'Log in',
-    signup: 'Sign up',
+    signup: 'Create your account',
   };
 
   if (!isBrowser) return null;
