@@ -42,13 +42,63 @@ export default function Dashboard() {
     // console.log('totals', totals);
   }
 
-  function handleNewCoinSubmit(event) {
+  function handleAddHolding(event) {
+    // clean up by making async/await ?
     event.preventDefault();
     const regex = /\(([^)]+)\)/;
-    const coinSymbol = regex.exec(event.target[0].value)[1];
-    const coinAmount = event.target[1].value;
-    // console.log(coinSymbol);
-    // console.log(coinAmount);
+    const symbol = regex.exec(event.target[0].value)[1];
+    const name = event.target[0].value.split('(')[0].trim();
+    const amount = event.target[1].value;
+
+    fetch('/api/holdings', {
+      method: 'POST',
+      body: JSON.stringify({ symbol, name, amount }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(res => {
+        if (res.ok) {
+          return res.json();
+        }
+
+        return res.json().then(data => {
+          throw new Error(data.message || 'Something went wrong!');
+        });
+      })
+      .then(data => {
+        // TODO: empty out input fields
+        // TODO: either trigger refresh of data or optimistically update UI
+        // example data:
+        // {
+        //   lastErrorObject: { n: 1, updatedExisting: true },
+        //   value: {
+        //     _id: 61650a3891ec3134acfb45aa,
+        //     symbol: 'BTC',
+        //     user: 6164ed9f56e44a09502e4ab1,
+        //     __v: 0,
+        //     amount: 0.5,
+        //     name: 'Bitcoin'
+        //   },
+        //   ...
+        // }
+      })
+      .catch(error => {
+        // TODO: handle this
+      });
+  }
+
+  function handleDeleteHolding(holdingId) {
+    fetch(`/api/holdings/${holdingId}`, {
+      method: 'DELETE',
+    })
+      .then(res => res.json())
+      .then(data => {
+        // TODO: either trigger refresh of data or optimistically update UI
+      })
+      .catch(error => {
+        // TODO: handle this
+      });
   }
 
   // TODO: error handling
@@ -145,7 +195,7 @@ export default function Dashboard() {
                   <td className="pr-4 text-right">${round(holding.value, 2)}</td>
                   <td className="pr-4 text-right">{round(holding.allocation, 2)}%</td>
                   <td className="w-10 pl-2">
-                    <button className="flex hover:text-blue-400">
+                    <button className="flex hover:text-blue-400" onClick={() => handleDeleteHolding(holding.id)}>
                       <svg className="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
                         <path
                           fill="currentColor"
@@ -161,7 +211,7 @@ export default function Dashboard() {
         </div>
         <div className="bg-gray-900 py-4 flex pl-4">
           {isAdding && (
-            <form className="flex w-3/4" onSubmit={handleNewCoinSubmit}>
+            <form className="flex w-3/4" onSubmit={handleAddHolding}>
               <CoinSearch availableCoins={availableCoins} />
               <input
                 className="shadow appearance-none border rounded w-3/4 py-2 px-3 ml-2 mr-6 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"

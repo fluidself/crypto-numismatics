@@ -1,5 +1,5 @@
 import { getSession } from 'next-auth/client';
-import { connectToDatabase } from '../../lib/db';
+import { connectToDatabase } from '../../../lib/db';
 
 export default async function handler(req, res) {
   const session = await getSession({ req: req });
@@ -40,50 +40,23 @@ export default async function handler(req, res) {
     try {
       const { symbol, name, amount } = req.body;
       const result = await db.collection('holdings').findOneAndUpdate(
-        { symbol, user: userId },
+        { symbol: symbol, user: userId },
         {
-          symbol: symbol,
-          name: name,
-          $inc: {
-            amount: amount,
+          $set: {
+            symbol,
+            name,
+            user: userId,
           },
-          user: userId,
+          $inc: {
+            amount: Number(amount),
+          },
         },
-        { upsert: true, new: true, runValidators: true },
+        { upsert: true, returnDocument: 'after' },
       );
-      console.log('POST result', result);
+
       res.status(201).json({ message: 'Holding added' }); // return holding here? or do I not need it and can just await?
     } catch (error) {
       res.status(500).json({ message: 'Could not add holding' });
-    }
-  }
-
-  if (req.method === 'PUT') {
-    if (!(req.params.id && req.body.id && req.params.id === req.body.id)) {
-      const message = `Request path id (${req.params.id}) and request body id ` + `(${req.body.id}) must match`;
-      console.error(message);
-      res.status(400).json({ message: message });
-      client.close();
-      return;
-    }
-
-    try {
-      const { amount } = req.body;
-      const result = await db.collection('holdings').updateOne({ _id: req.params.id }, { $set: { amount: amount } });
-      console.log('PUT result', result);
-      res.status(204).end();
-    } catch (error) {
-      res.status(500).json({ message: 'Could not update holding' });
-    }
-  }
-
-  if (req.method === 'DELETE') {
-    try {
-      const result = await db.collection('holdings').deleteOne({ _id: req.params.id });
-      console.log('DELETE result', result);
-      res.status(204).end();
-    } catch (error) {
-      res.status(500).json({ message: 'Could not delete holding' });
     }
   }
 
