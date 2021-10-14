@@ -4,6 +4,7 @@ import { useSession } from 'next-auth/client';
 import useSWR from 'swr';
 import Navbar from '../components/Navbar';
 import PieChart from '../components/PieChart';
+import CoinSearch from '../components/CoinSearch';
 import { getPopulatedHoldings, getTotals, round } from '../lib/utils';
 
 const fetcher = (...args) => fetch(...args).then(res => res.json());
@@ -20,14 +21,22 @@ export default function Dashboard() {
   }, [session]);
 
   const { data: prices, error: pricesError } = useSWR('/api/prices', fetcher);
+  // const { data: prices, error: pricesError } = useSWR(
+  //   'https://h420wm7t6e.execute-api.us-east-1.amazonaws.com/dev/tickers?currency=USD',
+  //   fetcher,
+  // );
   const { data: holdings, error: holdingsError } = useSWR('/api/holdings', fetcher);
   let populatedHoldings;
   let totals;
+
+  let availableCoins;
 
   if (holdings?.holdings && prices?.data) {
     populatedHoldings = getPopulatedHoldings(holdings.holdings, prices.data);
     totals = getTotals(populatedHoldings, prices.data);
     populatedHoldings.map(holding => (holding.allocation = (100 / totals.total) * holding.value));
+
+    availableCoins = prices.data.map(element => ({ name: element.name, symbol: element.symbol }));
 
     // console.log('populatedHoldings', populatedHoldings);
     // console.log('totals', totals);
@@ -35,6 +44,11 @@ export default function Dashboard() {
 
   function handleNewCoinSubmit(event) {
     event.preventDefault();
+    const regex = /\(([^)]+)\)/;
+    const coinSymbol = regex.exec(event.target[0].value)[1];
+    const coinAmount = event.target[1].value;
+    // console.log(coinSymbol);
+    // console.log(coinAmount);
   }
 
   // TODO: error handling
@@ -50,7 +64,7 @@ export default function Dashboard() {
         <div className="bg-gray-700 flex justify-between py-4 px-4">
           <div className="text-left">
             <h3 className="uppercase">Portfolio value</h3>
-            <p className="text-2xl">
+            <p className="text-2xl pt-1">
               ${totals.total ? round(totals.total, 2) : '0'}{' '}
               <small className={totals.total ? 'block' : ''}>(₿{Number(totals.totalBTC) ? totals.totalBTC : '0'})</small>
             </p>
@@ -147,34 +161,24 @@ export default function Dashboard() {
         </div>
         <div className="bg-gray-900 py-4 flex pl-4">
           {isAdding && (
-            <form className="flex" onSubmit={handleNewCoinSubmit}>
+            <form className="flex w-3/4" onSubmit={handleNewCoinSubmit}>
+              <CoinSearch availableCoins={availableCoins} />
               <input
-                className="shadow appearance-none border rounded w-full py-2 px-3 mr-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                type="search"
-                required
-                autoFocus
-                placeholder="Search coins..."
-                // value={formInput.username}
-                // onChange={e => updateFormInput({ ...formInput, username: e.target.value })}
-              />
-              <input
-                className="shadow appearance-none border rounded w-full py-2 px-3 mr-6 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className="shadow appearance-none border rounded w-3/4 py-2 px-3 ml-2 mr-6 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 // type="text"
                 type="number"
                 required
                 min="0"
                 step="any"
                 placeholder="Amount"
-                // value={formInput.username}
-                // onChange={e => updateFormInput({ ...formInput, username: e.target.value })}
               />
               <button
-                className="bg-blue-400 hover:bg-blue-500 text-white px-6 rounded focus:outline-none focus:shadow-outline uppercase text-sm tracking-wider"
+                className="bg-blue-400 hover:bg-blue-500 text-white px-6 rounded focus:outline-none focus:shadow-outline uppercase text-xs tracking-wider"
                 type="submit"
               >
                 Add&nbsp;coin
               </button>
-              <button className="ml-2 text-sm tracking-wider border rounded uppercase px-6" onClick={() => setIsAdding(false)}>
+              <button className="ml-2 text-xs tracking-wider border rounded uppercase px-6" onClick={() => setIsAdding(false)}>
                 Cancel
               </button>
             </form>
