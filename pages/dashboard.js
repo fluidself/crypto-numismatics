@@ -20,26 +20,23 @@ export default function Dashboard() {
     }
   }, [session]);
 
-  const { data: prices, error: pricesError } = useSWR('/api/prices', fetcher);
-  // const { data: prices, error: pricesError } = useSWR(
-  //   'https://h420wm7t6e.execute-api.us-east-1.amazonaws.com/dev/tickers?currency=USD',
-  //   fetcher,
-  // );
+  const { data: currencies, error: pricesError } = useSWR(
+    `https://api.nomics.com/v1/currencies/ticker?key=${process.env.NEXT_PUBLIC_NOMICS_API_KEY}&convert=USD&status=active`,
+    fetcher,
+  );
   const { data: holdings, error: holdingsError } = useSWR('/api/holdings', fetcher);
   let populatedHoldings;
   let totals;
 
   let availableCoins;
 
-  if (holdings?.holdings && prices?.data) {
-    populatedHoldings = getPopulatedHoldings(holdings.holdings, prices.data);
-    totals = getTotals(populatedHoldings, prices.data);
+  if (holdings?.holdings && currencies?.length) {
+    const partialCurrencies = currencies.slice(0, 1500);
+    populatedHoldings = getPopulatedHoldings(holdings.holdings, partialCurrencies);
+    totals = getTotals(populatedHoldings, partialCurrencies);
     populatedHoldings.map(holding => (holding.allocation = (100 / totals.total) * holding.value));
 
-    availableCoins = prices.data.map(element => ({ name: element.name, symbol: element.symbol }));
-
-    // console.log('populatedHoldings', populatedHoldings);
-    // console.log('totals', totals);
+    availableCoins = partialCurrencies.map(element => ({ name: element.name, symbol: element.symbol }));
   }
 
   function handleAddHolding(event) {
