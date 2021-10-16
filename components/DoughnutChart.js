@@ -1,4 +1,4 @@
-import { Pie } from 'react-chartjs-2';
+import { Doughnut } from 'react-chartjs-2';
 import { round } from '../lib/utils';
 
 const COLORS = [
@@ -15,7 +15,7 @@ const COLORS = [
   'rgba(16, 138, 159, 0.7)',
 ];
 
-export default function PieChart({ holdings }) {
+export default function DoughnutChart({ holdings }) {
   const sortedHoldings = holdings.sort((a, b) => b.allocation - a.allocation);
   const data = {
     labels: sortedHoldings.map(holding => holding.name),
@@ -31,6 +31,7 @@ export default function PieChart({ holdings }) {
   };
   const options = {
     maintainAspectRatio: true,
+    cutout: '40%',
     plugins: {
       legend: {
         display: false,
@@ -50,5 +51,5 @@ export default function PieChart({ holdings }) {
     },
   };
 
-  return <Pie data={data} options={options} height={200} width={200} />;
+  return <Doughnut data={data} options={options} height={200} width={200} />;
 }

@@ -3,7 +3,8 @@ import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/client';
 import useSWR from 'swr';
 import Navbar from '../components/Navbar';
-import PieChart from '../components/PieChart';
+import DoughnutChart from '../components/DoughnutChart';
+// import PieChart from '../components/PieChart';
 import CoinSearch from '../components/CoinSearch';
 import Modal from '../components/Modal';
 import EditHoldingsForm from '../components/EditHoldingsForm';
@@ -158,7 +159,8 @@ export default function Dashboard() {
                 <p>Your portfolio is currently empty.</p>
               )}
               <div className="hidden lg:block">
-                <PieChart holdings={populatedHoldings} />
+                {/* <PieChart holdings={populatedHoldings} /> */}
+                <DoughnutChart holdings={populatedHoldings} />
               </div>
             </div>
             <div className="flex">
