@@ -26,10 +26,7 @@ export default async function handler(req, res) {
 
     try {
       const { amount } = req.body;
-      const result = await db
-        .collection('holdings')
-        .updateOne({ _id: new mongo.ObjectId(req.query.holdingId) }, { $set: { amount: amount } });
-      console.log('PUT result', result);
+      await db.collection('holdings').updateOne({ _id: new mongo.ObjectId(req.query.holdingId) }, { $set: { amount: amount } });
       res.status(204).end();
     } catch (error) {
       res.status(500).json({ message: 'Could not update holding' });

@@ -21,6 +21,7 @@ export default function Modal({ type, children, handleModal }) {
   const HEADINGS = {
     login: 'Log in',
     signup: 'Create your account',
+    holdings: 'Edit holdings',
   };
 
   if (!isBrowser) return null;

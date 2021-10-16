@@ -5,6 +5,8 @@ import useSWR from 'swr';
 import Navbar from '../components/Navbar';
 import PieChart from '../components/PieChart';
 import CoinSearch from '../components/CoinSearch';
+import Modal from '../components/Modal';
+import EditHoldingsForm from '../components/EditHoldingsForm';
 import { getPopulatedHoldings, getTotals, round } from '../lib/utils';
 
 const fetcher = (...args) => fetch(...args).then(res => res.json());
@@ -12,6 +14,8 @@ const fetcher = (...args) => fetch(...args).then(res => res.json());
 export default function Dashboard() {
   const [session, loading] = useSession();
   const [isAdding, setIsAdding] = useState(false);
+  // const [editing, setEditing] = useState('');
+  const [modal, setModal] = useState('');
   const router = useRouter();
 
   useEffect(() => {
@@ -27,7 +31,6 @@ export default function Dashboard() {
   const { data: holdings, error: holdingsError } = useSWR('/api/holdings', fetcher);
   let populatedHoldings;
   let totals;
-
   let availableCoins;
 
   if (holdings?.holdings && currencies?.length) {
@@ -212,7 +215,6 @@ export default function Dashboard() {
               <CoinSearch availableCoins={availableCoins} />
               <input
                 className="shadow appearance-none border rounded w-3/4 py-2 px-3 ml-2 mr-6 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                // type="text"
                 type="number"
                 required
                 min="0"
@@ -242,10 +244,7 @@ export default function Dashboard() {
                   </svg>
                   Add
                 </button>
-                <button
-                  className="rounded inline-flex items-center hover:text-blue-400"
-                  // onClick={handleEditHoldings}
-                >
+                <button className="rounded inline-flex items-center hover:text-blue-400" onClick={() => setModal('holdings')}>
                   <svg className="fill-current w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
                     <path
                       fill="currentColor"
@@ -264,6 +263,11 @@ export default function Dashboard() {
               </button>
             ))}
         </div>
+        {modal && (
+          <Modal type={modal} handleModal={setModal}>
+            {modal === 'holdings' && <EditHoldingsForm handleModal={setModal} holdings={populatedHoldings} />}
+          </Modal>
+        )}
       </div>
     </div>
   );
