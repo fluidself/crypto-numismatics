@@ -21,6 +21,7 @@ export default function EditHoldingsForm({ handleModal, holdings }) {
 
   async function handleSubmit(event) {
     event.preventDefault();
+    setLoading(true);
 
     const updates = [];
     for (let i = 0; i < holdings.length; i++) {
@@ -36,11 +37,14 @@ export default function EditHoldingsForm({ handleModal, holdings }) {
       }
     }
 
-    setLoading(true);
-    await Promise.all(updates).catch(error => console.log(error));
-
-    setLoading(false);
-    handleModal('');
+    try {
+      await Promise.all(updates);
+      setLoading(false);
+      handleModal('');
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
   }
 
   return (
@@ -73,7 +77,7 @@ export default function EditHoldingsForm({ handleModal, holdings }) {
               fill="none"
               viewBox="0 0 24 24"
             >
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
               <path
                 className="opacity-75"
                 fill="currentColor"
@@ -81,7 +85,7 @@ export default function EditHoldingsForm({ handleModal, holdings }) {
               ></path>
             </svg>
           )}
-          {loading ? 'Processing' : 'Update'}
+          {loading ? 'Updating' : 'Update'}
         </button>
         <button className="ml-2 text-xs tracking-wider border rounded uppercase px-6 py-2" onClick={() => handleModal('')}>
           Cancel

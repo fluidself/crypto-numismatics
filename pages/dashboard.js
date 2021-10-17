@@ -5,17 +5,16 @@ import useSWR from 'swr';
 import Navbar from '../components/Navbar';
 import DoughnutChart from '../components/DoughnutChart';
 // import PieChart from '../components/PieChart';
-import CoinSearch from '../components/CoinSearch';
 import Modal from '../components/Modal';
 import EditHoldingsForm from '../components/EditHoldingsForm';
 import FullPageSpinner from '../components/FullPageSpinner';
 import { getPopulatedHoldings, getTotals, round } from '../lib/utils';
+import PortfolioFooter from '../components/PortfolioFooter';
 
 const fetcher = (...args) => fetch(...args).then(res => res.json());
 
 export default function Dashboard() {
   const [session, loading] = useSession();
-  const [isAdding, setIsAdding] = useState(false);
   const [modal, setModal] = useState('');
   const router = useRouter();
 
@@ -39,67 +38,17 @@ export default function Dashboard() {
     populatedHoldings = getPopulatedHoldings(holdings.holdings, partialCurrencies);
     totals = getTotals(populatedHoldings, partialCurrencies);
     populatedHoldings.map(holding => (holding.allocation = (100 / totals.total) * holding.value));
-
     availableCoins = partialCurrencies.map(element => ({ name: element.name, symbol: element.symbol }));
   }
 
-  function handleAddHolding(event) {
-    // clean up by making async/await ?
-    event.preventDefault();
-    const regex = /\(([^)]+)\)/;
-    const symbol = regex.exec(event.target[0].value)[1];
-    const name = event.target[0].value.split('(')[0].trim();
-    const amount = event.target[1].value;
-
-    fetch('/api/holdings', {
-      method: 'POST',
-      body: JSON.stringify({ symbol, name, amount }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then(res => {
-        if (res.ok) {
-          return res.json();
-        }
-
-        return res.json().then(data => {
-          throw new Error(data.message || 'Something went wrong!');
-        });
-      })
-      .then(data => {
-        // TODO: empty out input fields
-        // TODO: either trigger refresh of data or optimistically update UI
-        // example data:
-        // {
-        //   lastErrorObject: { n: 1, updatedExisting: true },
-        //   value: {
-        //     _id: 61650a3891ec3134acfb45aa,
-        //     symbol: 'BTC',
-        //     user: 6164ed9f56e44a09502e4ab1,
-        //     __v: 0,
-        //     amount: 0.5,
-        //     name: 'Bitcoin'
-        //   },
-        //   ...
-        // }
-      })
-      .catch(error => {
-        // TODO: handle this
+  async function handleDeleteHolding(holdingId) {
+    try {
+      await fetch(`/api/holdings/${holdingId}`, {
+        method: 'DELETE',
       });
-  }
-
-  function handleDeleteHolding(holdingId) {
-    fetch(`/api/holdings/${holdingId}`, {
-      method: 'DELETE',
-    })
-      .then(res => res.json())
-      .then(data => {
-        // TODO: either trigger refresh of data or optimistically update UI
-      })
-      .catch(error => {
-        // TODO: handle this
-      });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   // TODO: error handling
@@ -226,66 +175,7 @@ export default function Dashboard() {
                 </tbody>
               </table>
             </div>
-            <div className="bg-gray-900 py-4 flex pl-4">
-              {isAdding && (
-                <form className="flex w-3/4" onSubmit={handleAddHolding}>
-                  <CoinSearch availableCoins={availableCoins} />
-                  <input
-                    className="shadow appearance-none border rounded w-3/4 py-2 px-3 ml-2 mr-6 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    type="number"
-                    required
-                    min="0"
-                    step="any"
-                    placeholder="Amount"
-                  />
-                  <button
-                    className="bg-blue-400 hover:bg-blue-500 text-white px-6 rounded focus:outline-none focus:shadow-outline uppercase text-xs tracking-wider"
-                    type="submit"
-                  >
-                    Add&nbsp;coin
-                  </button>
-                  <button
-                    className="ml-2 text-xs tracking-wider border rounded uppercase px-6"
-                    onClick={() => setIsAdding(false)}
-                  >
-                    Cancel
-                  </button>
-                </form>
-              )}
-              {!isAdding &&
-                (populatedHoldings.length ? (
-                  <>
-                    <button
-                      className="mr-4 rounded inline-flex items-center hover:text-blue-400"
-                      onClick={() => setIsAdding(true)}
-                    >
-                      <svg className="fill-current w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                        <path
-                          fill="currentColor"
-                          d="M448 294.2v-76.4c0-13.3-10.7-24-24-24H286.2V56c0-13.3-10.7-24-24-24h-76.4c-13.3 0-24 10.7-24 24v137.8H24c-13.3 0-24 10.7-24 24v76.4c0 13.3 10.7 24 24 24h137.8V456c0 13.3 10.7 24 24 24h76.4c13.3 0 24-10.7 24-24V318.2H424c13.3 0 24-10.7 24-24z"
-                        ></path>
-                      </svg>
-                      Add
-                    </button>
-                    <button className="rounded inline-flex items-center hover:text-blue-400" onClick={() => setModal('holdings')}>
-                      <svg className="fill-current w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
-                        <path
-                          fill="currentColor"
-                          d="M402.6 83.2l90.2 90.2c3.8 3.8 3.8 10 0 13.8L274.4 405.6l-92.8 10.3c-12.4 1.4-22.9-9.1-21.5-21.5l10.3-92.8L388.8 83.2c3.8-3.8 10-3.8 13.8 0zm162-22.9l-48.8-48.8c-15.2-15.2-39.9-15.2-55.2 0l-35.4 35.4c-3.8 3.8-3.8 10 0 13.8l90.2 90.2c3.8 3.8 10 3.8 13.8 0l35.4-35.4c15.2-15.3 15.2-40 0-55.2zM384 346.2V448H64V128h229.8c3.2 0 6.2-1.3 8.5-3.5l40-40c7.6-7.6 2.2-20.5-8.5-20.5H48C21.5 64 0 85.5 0 112v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V306.2c0-10.7-12.9-16-20.5-8.5l-40 40c-2.2 2.3-3.5 5.3-3.5 8.5z"
-                        ></path>
-                      </svg>
-                      Edit
-                    </button>
-                  </>
-                ) : (
-                  <button
-                    className="bg-blue-400 hover:bg-blue-500 text-white py-2 px-4 rounded focus:outline-none focus:shadow-outline uppercase text-sm tracking-wider"
-                    onClick={() => setIsAdding(true)}
-                  >
-                    Add your first coin
-                  </button>
-                ))}
-            </div>
+            <PortfolioFooter holdings={populatedHoldings} availableCoins={availableCoins} handleModal={setModal} />
             {modal && (
               <Modal type={modal} handleModal={setModal}>
                 {modal === 'holdings' && <EditHoldingsForm handleModal={setModal} holdings={populatedHoldings} />}
