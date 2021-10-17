@@ -39,7 +39,7 @@ export default async function handler(req, res) {
 
     try {
       const { symbol, name, amount } = req.body;
-      const result = await db.collection('holdings').findOneAndUpdate(
+      await db.collection('holdings').findOneAndUpdate(
         { symbol: symbol, user: userId },
         {
           $set: {
@@ -54,7 +54,7 @@ export default async function handler(req, res) {
         { upsert: true, returnDocument: 'after' },
       );
 
-      res.status(201).json({ message: 'Holding added' }); // return holding here? or do I not need it and can just await?
+      res.status(201).json({ message: 'Holding added' });
     } catch (error) {
       res.status(500).json({ message: 'Could not add holding' });
     }
