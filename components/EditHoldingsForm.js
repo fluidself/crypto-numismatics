@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useSWRConfig } from 'swr';
 
 function deleteHolding(holdingId) {
   return fetch(`/api/holdings/${holdingId}`, {
@@ -18,6 +19,7 @@ function updateHolding(holdingId, amount) {
 
 export default function EditHoldingsForm({ handleModal, holdings }) {
   const [loading, setLoading] = useState(false);
+  const { mutate } = useSWRConfig();
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -40,6 +42,7 @@ export default function EditHoldingsForm({ handleModal, holdings }) {
     try {
       await Promise.all(updates);
       setLoading(false);
+      mutate('/api/holdings');
       handleModal('');
     } catch (error) {
       console.log(error);
