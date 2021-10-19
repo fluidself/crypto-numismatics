@@ -1,13 +1,5 @@
 import ReactSearchAutocomplete from './react-search-autocomplete/ReactSearchAutocomplete';
 
-// const MOCK_ITEMS = [
-//   { id: 0, symbol: 'BTC', name: 'Bitcoin' },
-//   { id: 1, symbol: 'ETH', name: 'Ethereum' },
-//   { id: 2, symbol: 'BNB', name: 'Binance Coin' },
-//   { id: 3, symbol: 'ADA', name: 'Cardano' },
-//   { id: 4, symbol: 'USDT', name: 'Tether USD' },
-// ];
-
 export default function CoinSearch({ availableCoins = [] }) {
   const formatResult = item => `${item.name} (${item.symbol})`;
 
