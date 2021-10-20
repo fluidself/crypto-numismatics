@@ -43,12 +43,10 @@ export default function Dashboard() {
     availableCoins = partialCurrencies.map(element => ({ name: element.name, symbol: element.symbol }));
   }
 
-  // TODO: alternative loading indicator? render skeleton + spinner in table?
-
   return (
     <div className="h-screen bg-gray-800">
       <Navbar />
-      {!populatedHoldings && !totals ? (
+      {loading || (!populatedHoldings && !totals) ? (
         <FullPageSpinner />
       ) : (
         <>

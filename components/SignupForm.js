@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { signIn } from 'next-auth/client';
 import { useRouter } from 'next/router';
+import SpinnerIcon from './icons/SpinnerIcon';
 
 async function createUser(username, password, passwordconfirm) {
   const response = await fetch('/api/auth/signup', {
@@ -21,25 +22,28 @@ async function createUser(username, password, passwordconfirm) {
 
 export default function SignupForm({ handleModal }) {
   const [formInput, updateFormInput] = useState({ username: '', password: '', passwordconfirm: '' });
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const router = useRouter();
 
   async function handleSubmit(event) {
-    // TODO: handle loading state
     event.preventDefault();
+    setLoading(true);
+
     const { username, password, passwordconfirm } = formInput;
 
     try {
-      // const signupResult = await createUser(username, password, passwordconfirm);
       await createUser(username, password, passwordconfirm);
       const loginResult = await signIn('credentials', { redirect: false, username, password });
 
       if (!loginResult.error) {
+        setLoading(false);
         handleModal('');
         router.replace('/dashboard');
       }
     } catch (error) {
       setError(error.message);
+      setLoading(false);
     }
   }
 
@@ -91,10 +95,12 @@ export default function SignupForm({ handleModal }) {
       {error && <p className="text-red-600 mb-2">{error}</p>}
       <div className="flex items-center justify-between">
         <button
-          className="bg-blue-400 hover:bg-blue-500 text-white py-2 px-4 rounded focus:outline-none focus:shadow-outline uppercase text-sm tracking-wider"
+          className="bg-blue-400 hover:bg-blue-500 text-white py-2 px-4 rounded focus:outline-none focus:shadow-outline uppercase text-sm tracking-wider inline-flex items-center"
           type="submit"
+          disabled={loading ? true : false}
         >
-          Create account
+          {loading && <SpinnerIcon />}
+          {loading ? 'Creating' : 'Create account'}
         </button>
       </div>
     </form>
