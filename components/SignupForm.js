@@ -95,7 +95,7 @@ export default function SignupForm({ handleModal }) {
       {error && <p className="text-red-600 mb-2">{error}</p>}
       <div className="flex items-center justify-between">
         <button
-          className="bg-blue-400 hover:bg-blue-500 text-white py-2 px-4 rounded focus:outline-none focus:shadow-outline uppercase text-sm tracking-wider inline-flex items-center"
+          className="bg-blue-400 hover:bg-blue-500 text-white py-2 px-4 rounded focus:shadow-outline uppercase text-sm tracking-wider inline-flex items-center"
           type="submit"
           disabled={loading ? true : false}
         >

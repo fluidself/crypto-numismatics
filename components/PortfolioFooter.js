@@ -55,7 +55,7 @@ export default function PortfolioFooter({ holdings, availableCoins, handleModal 
   return (
     <>
       {adding && (
-        <form className="flex w-3/4 -m-1.5" onSubmit={handleSubmit}>
+        <form className="flex w-full lg:w-4/5 -m-1.5" onSubmit={handleSubmit}>
           <CoinSearch availableCoins={availableCoins} />
           <input
             className="shadow appearance-none border rounded w-3/4 py-2 px-3 ml-2 mr-6 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -68,7 +68,7 @@ export default function PortfolioFooter({ holdings, availableCoins, handleModal 
           />
           <div className="w-3/4 flex">
             <button
-              className="bg-blue-400 hover:bg-blue-500 text-white px-6 rounded focus:outline-none focus:shadow-outline uppercase text-xs tracking-wider inline-flex items-center"
+              className="bg-blue-400 hover:bg-blue-500 text-white px-6 rounded focus:shadow-outline uppercase text-xs tracking-wider inline-flex items-center"
               type="submit"
               disabled={loading ? true : false}
             >
@@ -83,19 +83,13 @@ export default function PortfolioFooter({ holdings, availableCoins, handleModal 
       )}
       {!adding &&
         (holdings.length ? (
-          <>
-            <button className="mr-4 rounded inline-flex items-center hover:text-blue-400" onClick={() => setAdding(true)}>
-              <AddIcon />
-              Add
-            </button>
-            <button className="rounded inline-flex items-center hover:text-blue-400" onClick={() => handleModal('holdings')}>
-              <EditIcon />
-              Edit
-            </button>
-          </>
+          <button className="rounded inline-flex items-center hover:text-blue-400" onClick={() => setAdding(true)}>
+            <AddIcon />
+            Add Holding
+          </button>
         ) : (
           <button
-            className="bg-blue-400 hover:bg-blue-500 text-white py-2 px-4 -m-1 rounded focus:outline-none focus:shadow-outline uppercase text-sm tracking-wider"
+            className="bg-blue-400 hover:bg-blue-500 text-white py-2 px-4 -m-1 rounded focus:shadow-outline uppercase text-sm tracking-wider"
             onClick={() => setAdding(true)}
           >
             Add your first coin
