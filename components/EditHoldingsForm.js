@@ -18,7 +18,7 @@ function updateHolding(holdingId, amount) {
   });
 }
 
-export default function EditHoldingsForm({ handleModal, holdings }) {
+export default function EditHoldingsForm({ holdings, handleModal }) {
   const [loading, setLoading] = useState(false);
   const { mutate } = useSWRConfig();
 
@@ -42,13 +42,13 @@ export default function EditHoldingsForm({ handleModal, holdings }) {
 
     try {
       await Promise.all(updates);
-      setLoading(false);
       mutate('/api/holdings');
-      handleModal('');
     } catch (error) {
       console.log(error);
-      setLoading(false);
     }
+
+    setLoading(false);
+    handleModal('');
   }
 
   return (

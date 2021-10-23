@@ -21,6 +21,22 @@ export default function PortfolioFooter({ holdings, availableCoins, handleModal 
     const amount = event.target[1].value;
 
     try {
+      const optimisticNewHoldings = holdings;
+      const existingHolding = optimisticNewHoldings.find(holding => holding.symbol === symbol);
+
+      if (existingHolding) {
+        existingHolding.amount += Number(amount);
+      } else {
+        optimisticNewHoldings.push({ symbol, name, amount });
+      }
+
+      setTimeout(() => {
+        mutate('/api/holdings', { holdings: optimisticNewHoldings }, false);
+        inputRef.current.value = '';
+        document.querySelector('.clear-icon').click();
+        setLoading(false);
+      }, 500);
+
       await fetch('/api/holdings', {
         method: 'POST',
         body: JSON.stringify({ symbol, name, amount }),
@@ -28,9 +44,7 @@ export default function PortfolioFooter({ holdings, availableCoins, handleModal 
           'Content-Type': 'application/json',
         },
       });
-      inputRef.current.value = '';
-      document.querySelector('.clear-icon').click();
-      setLoading(false);
+
       mutate('/api/holdings');
     } catch (error) {
       console.log(error);
