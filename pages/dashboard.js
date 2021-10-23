@@ -1,23 +1,24 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/client';
-import useSWR from 'swr';
-import Navbar from '../components/Navbar';
-import EditHoldingsForm from '../components/EditHoldingsForm';
+import useSWR, { useSWRConfig } from 'swr';
 import FullPageSpinner from '../components/FullPageSpinner';
 import PortfolioFooter from '../components/PortfolioFooter';
 import DeleteHolding from '../components/DeleteHolding';
 import DoughnutChart from '../components/DoughnutChart';
-// import PieChart from '../components/PieChart';
-import Modal from '../components/Modal';
+import EditableCell from '../components/EditableCell';
+import EditIcon from '../components/icons/EditIcon';
+import Navbar from '../components/Navbar';
 import { getPopulatedHoldings, getTotals, round } from '../lib/utils';
 
 const fetcher = (...args) => fetch(...args).then(res => res.json());
 
 export default function Dashboard() {
   const [session, loading] = useSession();
-  const [modal, setModal] = useState('');
+  const [editing, setEditing] = useState(false);
+  const [processingEdit, setProcessingEdit] = useState(false);
   const router = useRouter();
+  const { mutate } = useSWRConfig();
 
   useEffect(() => {
     if (!session) {
@@ -41,6 +42,47 @@ export default function Dashboard() {
     totals = getTotals(populatedHoldings, partialCurrencies);
     populatedHoldings.map(holding => (holding.allocation = (100 / totals.total) * holding.value));
     availableCoins = partialCurrencies.map(element => ({ name: element.name, symbol: element.symbol }));
+  }
+
+  function handleEditClick(holdingId) {
+    if (editing === holdingId) {
+      setEditing(false);
+    } else {
+      setEditing(holdingId);
+    }
+  }
+
+  async function editHolding(holdingId, submittedAmount) {
+    setProcessingEdit(true);
+    const currentHolding = populatedHoldings.find(holding => holding.id === holdingId);
+    const newAmount = Number(submittedAmount);
+
+    if (currentHolding.amount !== newAmount) {
+      const newHolding = { ...currentHolding, amount: newAmount };
+      const optimisticNewHoldings = [...populatedHoldings.filter(holding => holding.id !== holdingId), newHolding];
+
+      try {
+        setTimeout(() => {
+          mutate('/api/holdings', { holdings: optimisticNewHoldings }, false);
+          setEditing(false);
+        }, 500);
+
+        await fetch(`/api/holdings/${holdingId}`, {
+          method: 'PUT',
+          body: JSON.stringify({ id: holdingId, amount: newAmount }),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        mutate('/api/holdings');
+      } catch (error) {
+        console.log(error);
+        setEditing(false);
+      }
+    }
+
+    setProcessingEdit(false);
   }
 
   return (
@@ -96,7 +138,6 @@ export default function Dashboard() {
                 <p>Your portfolio is currently empty.</p>
               )}
               <div className="hidden lg:block">
-                {/* <PieChart holdings={populatedHoldings} /> */}
                 <DoughnutChart holdings={populatedHoldings} />
               </div>
             </div>
@@ -113,6 +154,7 @@ export default function Dashboard() {
                     <th className="pr-4 text-right">Amount</th>
                     <th className="pr-4 text-right">Value</th>
                     <th className="pr-4 text-right hidden lg:table-cell">Allocation</th>
+                    <th></th>
                     <th></th>
                   </tr>
                 </thead>
@@ -145,10 +187,26 @@ export default function Dashboard() {
                       >
                         {holding.percent_change_365d}%
                       </td>
-                      <td className="pr-4 text-right">{holding.amount}</td>
+                      <td className="pr-4 text-right">
+                        {editing === holding.id ? (
+                          <EditableCell
+                            amount={holding.amount}
+                            holdingId={holding.id}
+                            editHolding={editHolding}
+                            processing={processingEdit}
+                          />
+                        ) : (
+                          <span>{holding.amount}</span>
+                        )}
+                      </td>
                       <td className="pr-4 text-right">${round(holding.value, 2)}</td>
                       <td className="pr-4 text-right hidden lg:table-cell">{round(holding.allocation, 2)}%</td>
-                      <td className="w-10 pl-2">
+                      <td className="w-8 pl-2 ">
+                        <button className="flex hover:text-blue-400" onClick={() => handleEditClick(holding.id)}>
+                          <EditIcon />
+                        </button>
+                      </td>
+                      <td className="w-8 pl-2 ">
                         <DeleteHolding holdings={populatedHoldings} holdingId={holding.id} />
                       </td>
                     </tr>
@@ -157,13 +215,8 @@ export default function Dashboard() {
               </table>
             </div>
             <div className="bg-gray-900 flex pl-4 py-5">
-              <PortfolioFooter holdings={populatedHoldings} availableCoins={availableCoins} handleModal={setModal} />
+              <PortfolioFooter holdings={populatedHoldings} availableCoins={availableCoins} />
             </div>
-            {modal && (
-              <Modal type={modal} handleModal={setModal}>
-                {modal === 'holdings' && <EditHoldingsForm holdings={populatedHoldings} handleModal={setModal} />}
-              </Modal>
-            )}
           </div>
         </>
       )}
