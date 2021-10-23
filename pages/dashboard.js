@@ -149,7 +149,7 @@ export default function Dashboard() {
                       <td className="pr-4 text-right">${round(holding.value, 2)}</td>
                       <td className="pr-4 text-right hidden lg:table-cell">{round(holding.allocation, 2)}%</td>
                       <td className="w-10 pl-2">
-                        <DeleteHolding holdingId={holding.id} />
+                        <DeleteHolding holdings={populatedHoldings} holdingId={holding.id} />
                       </td>
                     </tr>
                   ))}
@@ -161,7 +161,7 @@ export default function Dashboard() {
             </div>
             {modal && (
               <Modal type={modal} handleModal={setModal}>
-                {modal === 'holdings' && <EditHoldingsForm handleModal={setModal} holdings={populatedHoldings} />}
+                {modal === 'holdings' && <EditHoldingsForm holdings={populatedHoldings} handleModal={setModal} />}
               </Modal>
             )}
           </div>
