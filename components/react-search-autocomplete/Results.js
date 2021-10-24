@@ -3,10 +3,9 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 export default function Results(props) {
-  const { results, onClick, setSearchString, maxResults, resultStringKeyName, onHover, formatResult } = props;
+  const { results, setSearchString, maxResults, resultStringKeyName, onHover, formatResult, keyLocation } = props;
 
   const handleClick = result => {
-    onClick(result);
     setSearchString(`${result.name} (${result.symbol})`);
   };
 
@@ -18,7 +17,7 @@ export default function Results(props) {
     <StyledResults>
       <div className="line" />
       <ul>
-        {results.slice(0, maxResults).map(result => {
+        {results.slice(0, maxResults).map((result, index) => {
           return (
             <li
               onMouseEnter={() => onHover(result)}
@@ -26,6 +25,7 @@ export default function Results(props) {
               key={`rsa-result-${result.symbol}`}
               onMouseDown={() => handleClick(result)}
               onClick={() => handleClick(result)}
+              className={index === keyLocation ? 'keySelected' : ''}
             >
               <div className="ellipsis" title={result[resultStringKeyName]}>
                 {formatResult(result)}
@@ -82,6 +82,10 @@ const StyledResults = styled.div`
         margin-left: 13px;
       }
     }
+  }
+  .keySelected {
+    background-color: ${props => props.theme.hoverBackgroundColor};
+    cursor: default;
   }
   .ellipsis {
     white-space: nowrap;
