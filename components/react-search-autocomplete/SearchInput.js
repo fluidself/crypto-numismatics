@@ -12,6 +12,7 @@ export default function SearchInput({
   onClear,
   placeholder,
   showClear,
+  onKeyDown,
 }) {
   const ref = useRef();
   let manualFocus = true;
@@ -37,6 +38,7 @@ export default function SearchInput({
         onFocus={handleOnFocus}
         placeholder={placeholder}
         autoFocus={autoFocus}
+        onKeyDown={onKeyDown}
       />
       <ClearIcon
         showClear={showClear}

@@ -18,7 +18,6 @@ export default function ReactSearchAutocomplete(props) {
     inputDebounce,
     onSearch,
     onHover,
-    onSelect,
     onFocus,
     onClear,
     showIcon,
@@ -40,6 +39,7 @@ export default function ReactSearchAutocomplete(props) {
 
   const [searchString, setSearchString] = useState(inputSearchString);
   const [results, setResults] = useState();
+  const [keyLocation, setKeyLocation] = useState(null);
 
   const callOnSearch = keyword => {
     let newResults = [];
@@ -50,6 +50,8 @@ export default function ReactSearchAutocomplete(props) {
     } else {
       setResults(newResults);
     }
+
+    setKeyLocation(null);
   };
 
   const handleOnSearch = React.useCallback(
@@ -63,11 +65,36 @@ export default function ReactSearchAutocomplete(props) {
 
   useEffect(() => {
     searchString?.length > 0 && results?.length > 0 && setResults(fuseResults(searchString));
+    setKeyLocation(null);
   }, [items]);
 
-  const handleOnClick = result => {
-    setResults([]);
-    onSelect(result);
+  const handleSelect = result => {
+    setSearchString(`${result.name} (${result.symbol})`);
+  };
+
+  const handleKeyDown = e => {
+    if (e.keyCode === 38 && results?.length > 0) {
+      e.preventDefault();
+      if (keyLocation === null || keyLocation === 0) {
+        setKeyLocation(results.length - 1);
+        setSearchString(results[results.length - 1][resultStringKeyName]);
+      } else if (keyLocation !== null) {
+        handleSelect(results[results.length - 1]);
+        setKeyLocation(keyLocation - 1);
+        handleSelect(results[keyLocation - 1]);
+      }
+    } else if (e.keyCode === 40 && results?.length > 0) {
+      e.preventDefault();
+      if (keyLocation == null || keyLocation === results.length - 1) {
+        setKeyLocation(0);
+        handleSelect(results[0]);
+      } else if (keyLocation < results.length - 1) {
+        setKeyLocation(keyLocation + 1);
+        handleSelect(results[keyLocation + 1]);
+      }
+    } else if (e.keyCode === 13 && results?.length > 0) {
+      handleSelect(results[keyLocation]);
+    }
   };
 
   const fuseResults = keyword =>
@@ -96,16 +123,17 @@ export default function ReactSearchAutocomplete(props) {
             placeholder={placeholder}
             showIcon={showIcon}
             showClear={showClear}
+            onKeyDown={handleKeyDown}
           />
           <Results
             results={results}
-            onClick={handleOnClick}
             onHover={onHover}
             setSearchString={setSearchString}
             showIcon={showIcon}
             maxResults={maxResults}
             resultStringKeyName={resultStringKeyName}
             formatResult={formatResult}
+            keyLocation={keyLocation}
           />
         </div>
       </StyledReactSearchAutocomplete>

@@ -160,7 +160,7 @@ export default function Dashboard() {
                 </thead>
                 <tbody className="bg-gray-700">
                   {populatedHoldings.map(holding => (
-                    <tr key={holding.id} className="border-b border-white">
+                    <tr key={holding.symbol} className="border-b border-white">
                       <td className="py-2 pl-4 text-left">{holding.name}</td>
                       <td className="pr-4 text-right">${round(holding.price, 2)}</td>
                       <td className={`pr-4 text-right ${holding.percent_change_24h > 0 ? 'text-green-500' : 'text-red-500'}`}>
