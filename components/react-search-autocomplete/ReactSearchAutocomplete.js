@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import Fuse from 'fuse.js';
 import { defaultTheme, defaultFuseOptions } from './config';
@@ -54,8 +54,9 @@ export default function ReactSearchAutocomplete(props) {
     setKeyLocation(null);
   };
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleOnSearch = React.useCallback(
-    inputDebounce > 0 ? debounce(keyword => callOnSearch(keyword), inputDebounce) : keyword => callOnSearch(keyword),
+    debounce(keyword => callOnSearch(keyword), DEFAULT_INPUT_DEBOUNCE),
     [items],
   );
 
@@ -66,6 +67,7 @@ export default function ReactSearchAutocomplete(props) {
   useEffect(() => {
     searchString?.length > 0 && results?.length > 0 && setResults(fuseResults(searchString));
     setKeyLocation(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [items]);
 
   const handleSelect = result => {

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { useSession, signIn } from 'next-auth/client';
+import { signIn, getSession } from 'next-auth/client';
 import Navbar from '../components/Navbar';
 import Modal from '../components/Modal';
 import LoginForm from '../components/LoginForm';
@@ -11,14 +11,18 @@ import SpinnerIcon from '../components/icons/SpinnerIcon';
 export default function LandingPage() {
   const [modal, setModal] = useState('');
   const [processingDemo, setProcessingDemo] = useState(false);
-  const [session, loading] = useSession();
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
-    if (session) {
-      router.replace('/dashboard');
-    }
-  }, [session]);
+    getSession().then(session => {
+      if (session) {
+        router.replace('/dashboard');
+      } else {
+        setLoading(false);
+      }
+    });
+  }, [router]);
 
   async function handleDemo() {
     setProcessingDemo(true);
