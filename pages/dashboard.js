@@ -1,6 +1,5 @@
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-import { useSession } from 'next-auth/client';
+import { useState } from 'react';
+import { useSession, getSession } from 'next-auth/client';
 import useSWR, { useSWRConfig } from 'swr';
 import { getPopulatedHoldings, getTotals, round, deleteHolding, updateHolding } from '../lib/utils';
 import FullPageSpinner from '../components/FullPageSpinner';
@@ -14,17 +13,10 @@ import Navbar from '../components/Navbar';
 const fetcher = (...args) => fetch(...args).then(res => res.json());
 
 export default function Dashboard() {
-  const [session, loading] = useSession();
+  const [, loading] = useSession();
   const [editing, setEditing] = useState(false);
   const [processingEdit, setProcessingEdit] = useState(false);
-  const router = useRouter();
   const { mutate } = useSWRConfig();
-
-  useEffect(() => {
-    if (!session) {
-      router.replace('/');
-    }
-  }, [session]);
 
   // TODO: handle these potential errors in UI
   const { data: currencies, error: pricesError } = useSWR(
@@ -224,4 +216,21 @@ export default function Dashboard() {
       )}
     </div>
   );
+}
+
+export async function getServerSideProps(context) {
+  const session = await getSession({ req: context.req });
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/',
+        // permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: { session },
+  };
 }

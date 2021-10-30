@@ -5,18 +5,17 @@ export default function Modal({ type, children, handleModal }) {
   const [isBrowser, setIsBrowser] = useState(false);
   const modalWrapperRef = useRef();
 
-  const backDropHandler = e => {
-    if (modalWrapperRef?.current?.contains(e.target)) {
-      handleModal('');
-    }
-  };
-
   useEffect(() => {
     setIsBrowser(true);
-    window.addEventListener('click', backDropHandler);
+    const backdropHandler = e => {
+      if (modalWrapperRef?.current?.contains(e.target)) {
+        handleModal('');
+      }
+    };
+    window.addEventListener('click', backdropHandler);
 
-    return () => window.removeEventListener('click', backDropHandler);
-  }, []);
+    return () => window.removeEventListener('click', backdropHandler);
+  }, [handleModal]);
 
   const HEADINGS = {
     login: 'Log in',
