@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/client';
 import useSWR, { useSWRConfig } from 'swr';
+import { getPopulatedHoldings, getTotals, round, deleteHolding, updateHolding } from '../lib/utils';
 import FullPageSpinner from '../components/FullPageSpinner';
 import PortfolioFooter from '../components/PortfolioFooter';
 import DeleteHolding from '../components/DeleteHolding';
@@ -9,7 +10,6 @@ import DoughnutChart from '../components/DoughnutChart';
 import EditableCell from '../components/EditableCell';
 import EditIcon from '../components/icons/EditIcon';
 import Navbar from '../components/Navbar';
-import { getPopulatedHoldings, getTotals, round } from '../lib/utils';
 
 const fetcher = (...args) => fetch(...args).then(res => res.json());
 
@@ -56,10 +56,18 @@ export default function Dashboard() {
     setProcessingEdit(true);
     const currentHolding = populatedHoldings.find(holding => holding.id === holdingId);
     const newAmount = Number(submittedAmount);
+    let optimisticNewHoldings;
+    let holdingRequestPromise;
 
     if (currentHolding.amount !== newAmount) {
-      const newHolding = { ...currentHolding, amount: newAmount };
-      const optimisticNewHoldings = [...populatedHoldings.filter(holding => holding.id !== holdingId), newHolding];
+      if (newAmount === 0) {
+        optimisticNewHoldings = populatedHoldings.filter(holding => holding.id !== holdingId);
+        holdingRequestPromise = deleteHolding(holdingId);
+      } else {
+        const newHolding = { ...currentHolding, amount: newAmount };
+        optimisticNewHoldings = [...populatedHoldings.filter(holding => holding.id !== holdingId), newHolding];
+        holdingRequestPromise = updateHolding(holdingId, newAmount);
+      }
 
       try {
         setTimeout(() => {
@@ -67,13 +75,7 @@ export default function Dashboard() {
           setEditing(false);
         }, 500);
 
-        await fetch(`/api/holdings/${holdingId}`, {
-          method: 'PUT',
-          body: JSON.stringify({ id: holdingId, amount: newAmount }),
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
+        await holdingRequestPromise;
 
         mutate('/api/holdings');
       } catch (error) {
