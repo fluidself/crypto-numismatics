@@ -2,7 +2,6 @@ import { useState, useRef } from 'react';
 import { useSWRConfig } from 'swr';
 import CoinSearch from './CoinSearch';
 import AddIcon from './icons/AddIcon';
-import EditIcon from './icons/EditIcon';
 import SpinnerIcon from './icons/SpinnerIcon';
 
 export default function PortfolioFooter({ holdings, availableCoins, handleModal }) {

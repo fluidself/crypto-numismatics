@@ -1,14 +1,16 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { useSession } from 'next-auth/client';
+import { useSession, signIn } from 'next-auth/client';
 import Navbar from '../components/Navbar';
 import Modal from '../components/Modal';
 import LoginForm from '../components/LoginForm';
 import SignupForm from '../components/SignupForm';
 import FullPageSpinner from '../components/FullPageSpinner';
+import SpinnerIcon from '../components/icons/SpinnerIcon';
 
 export default function LandingPage() {
   const [modal, setModal] = useState('');
+  const [processingDemo, setProcessingDemo] = useState(false);
   const [session, loading] = useSession();
   const router = useRouter();
 
@@ -17,6 +19,19 @@ export default function LandingPage() {
       router.replace('/dashboard');
     }
   }, [session]);
+
+  async function handleDemo() {
+    setProcessingDemo(true);
+
+    const username = 'demo';
+    const password = 'password';
+    const result = await signIn('credentials', { redirect: false, username, password });
+
+    if (!result.error) {
+      setProcessingDemo(false);
+      router.replace('/dashboard');
+    }
+  }
 
   return (
     <div className="h-screen bg-gray-800">
@@ -37,7 +52,14 @@ export default function LandingPage() {
             >
               Create account
             </button>
-            <button className="w-48 mb-4 py-2 text-sm tracking-wider border rounded-sm uppercase">View demo</button>
+            <button
+              className=" hover:text-gray-300 hover:border-gray-300 border rounded-sm w-48 py-2 px-4 uppercase text-sm tracking-wider inline-flex items-center justify-center"
+              onClick={handleDemo}
+              disabled={processingDemo ? true : false}
+            >
+              {processingDemo && <SpinnerIcon />}
+              {processingDemo ? 'Logging in' : 'View demo'}
+            </button>
           </div>
           {modal && (
             <Modal type={modal} handleModal={setModal}>
