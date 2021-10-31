@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/client';
 import LoginIcon from './icons/LoginIcon';
 import SignupIcon from './icons/SignupIcon';
@@ -14,9 +13,7 @@ export default function Navbar(props) {
   return (
     <div className="bg-gray-900">
       <header className="flex items-center justify-between py-3 text-white container mx-auto px-4 lg:px-0">
-        <Link href="/">
-          <a className="hover:text-blue-400">Crypto Numismatics</a>
-        </Link>
+        Crypto Numismatics
         <div>
           {!session && !loading && (
             <>
