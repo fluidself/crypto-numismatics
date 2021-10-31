@@ -1,4 +1,5 @@
 import { useSession, signOut } from 'next-auth/client';
+import CopyleftIcon from './icons/CopyleftIcon';
 import LoginIcon from './icons/LoginIcon';
 import SignupIcon from './icons/SignupIcon';
 import LogoutIcon from './icons/LogoutIcon';
@@ -11,9 +12,12 @@ export default function Navbar(props) {
   }
 
   return (
-    <div className="bg-gray-900">
+    <div className="bg-black bg-hero-pattern">
       <header className="flex items-center justify-between py-3 text-white container mx-auto px-4 lg:px-0">
-        Crypto Numismatics
+        <div className="flex items-center">
+          <CopyleftIcon />
+          <p className="hidden lg:block">Crypto Numismatics</p>
+        </div>
         <div>
           {!session && !loading && (
             <>

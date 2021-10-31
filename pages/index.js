@@ -38,17 +38,20 @@ export default function LandingPage() {
   }
 
   return (
-    <div className="h-screen bg-gray-800">
-      <Navbar handleModal={setModal} />
+    <div className="h-screen bg-black bg-hero-pattern">
+      <Navbar handleModal={setModal} isLandingPage={true} />
       {loading ? (
         <FullPageSpinner />
       ) : (
         <div className="text-white container mx-auto text-center mt-48">
           <h1 className="text-4xl mb-2 font-light">All your cryptocurrencies in one place</h1>
-          <p>
+          <p className="mb-2">
             Crypto Numismatics provides a simple, user-friendly overview of your digital currency holdings. Signing up is free and
             anonymous.
           </p>
+          <a href="https://nomics.com" target="_blank" className="underline hover:text-blue-400">
+            {'Crypto Market Cap & Pricing Data Provided By Nomics.'}
+          </a>
           <div className="mt-12 flex flex-col items-center">
             <button
               className="w-48 mb-4 py-2 text-sm tracking-wider rounded-sm uppercase bg-blue-400 hover:bg-blue-500"
