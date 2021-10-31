@@ -15,7 +15,7 @@ const COLORS = [
   'rgba(16, 138, 159, 0.7)',
 ];
 
-export default function DoughnutChart({ holdings }) {
+export default function DoughnutChart({ holdings = [] }) {
   const sortedHoldings = holdings.sort((a, b) => b.allocation - a.allocation);
   const data = {
     labels: sortedHoldings.map(holding => holding.name),

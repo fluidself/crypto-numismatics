@@ -4,7 +4,7 @@ import CoinSearch from './CoinSearch';
 import AddIcon from './icons/AddIcon';
 import SpinnerIcon from './icons/SpinnerIcon';
 
-export default function PortfolioFooter({ holdings, availableCoins, handleModal }) {
+export default function PortfolioFooter({ holdings = [], availableCoins }) {
   const [adding, setAdding] = useState(false);
   const [loading, setLoading] = useState(false);
   const { mutate } = useSWRConfig();

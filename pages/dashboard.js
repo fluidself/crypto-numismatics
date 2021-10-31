@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useSession, getSession } from 'next-auth/client';
-import useSWR, { useSWRConfig } from 'swr';
-import { getPopulatedHoldings, getTotals, round, deleteHolding, updateHolding } from '../lib/utils';
+import { useSWRConfig } from 'swr';
+import { useDashboardData, round, deleteHolding, updateHolding } from '../lib/utils';
 import FullPageSpinner from '../components/FullPageSpinner';
 import PortfolioFooter from '../components/PortfolioFooter';
 import DeleteHolding from '../components/DeleteHolding';
@@ -10,31 +10,12 @@ import EditableCell from '../components/EditableCell';
 import EditIcon from '../components/icons/EditIcon';
 import Navbar from '../components/Navbar';
 
-const fetcher = (...args) => fetch(...args).then(res => res.json());
-
 export default function Dashboard() {
   const [, loading] = useSession();
+  const { availableCoins, populatedHoldings, totals, isLoading, isError } = useDashboardData();
   const [editing, setEditing] = useState(false);
   const [processingEdit, setProcessingEdit] = useState(false);
   const { mutate } = useSWRConfig();
-
-  // TODO: handle these potential errors in UI
-  const { data: currencies, error: pricesError } = useSWR(
-    `https://api.nomics.com/v1/currencies/ticker?key=${process.env.NEXT_PUBLIC_NOMICS_API_KEY}&convert=USD&status=active`,
-    fetcher,
-  );
-  const { data: holdings, error: holdingsError } = useSWR('/api/holdings', fetcher);
-  let populatedHoldings;
-  let totals;
-  let availableCoins;
-
-  if (holdings?.holdings && currencies?.length) {
-    const partialCurrencies = currencies.slice(0, 1500);
-    populatedHoldings = getPopulatedHoldings(holdings.holdings, partialCurrencies);
-    totals = getTotals(populatedHoldings, partialCurrencies);
-    populatedHoldings.map(holding => (holding.allocation = (100 / totals.total) * holding.value));
-    availableCoins = partialCurrencies.map(element => ({ name: element.name, symbol: element.symbol }));
-  }
 
   function handleEditClick(holdingId) {
     if (editing === holdingId) {
@@ -79,10 +60,19 @@ export default function Dashboard() {
     setProcessingEdit(false);
   }
 
+  function renderError(error) {
+    return (
+      <>
+        <p>{`${error.status} error fetching ${error.type}:`}</p>
+        <code className="text-red-500">{JSON.stringify(error.info)}</code>
+      </>
+    );
+  }
+
   return (
     <div className="h-screen bg-gray-800">
       <Navbar />
-      {loading || (!populatedHoldings && !totals) ? (
+      {loading || isLoading ? (
         <FullPageSpinner />
       ) : (
         <>
@@ -90,47 +80,54 @@ export default function Dashboard() {
             <div className="h-12 bg-gray-900"></div>
             <div className="bg-gray-700 flex justify-between py-4 px-4">
               <div className="text-left">
-                <h3 className="uppercase">Portfolio value</h3>
-                <p className="text-2xl pt-1">
-                  ${totals.total ? round(totals.total, 2) : '0'}{' '}
-                  <small className={totals.total ? 'block' : ''}>(₿{Number(totals.totalBTC) ? totals.totalBTC : '0'})</small>
-                </p>
+                {isError && renderError(isError)}
+                {totals?.total ? (
+                  <>
+                    <h3 className="uppercase">Portfolio value</h3>
+                    <p className="text-2xl pt-1">
+                      ${totals.total ? round(totals.total, 2) : '0'}{' '}
+                      <small className={totals.total ? 'block' : ''}>(₿{Number(totals.totalBTC) ? totals.totalBTC : '0'})</small>
+                    </p>
+                  </>
+                ) : null}
               </div>
-              {populatedHoldings.length ? (
-                <div className="text-left">
-                  <h3 className="uppercase">Performance</h3>
-                  <table>
-                    <tbody>
-                      <tr>
-                        <td className="py-2 pr-2">24 hours</td>
-                        <td className={totals.change24HrsPct > 0 ? 'text-green-500' : 'text-red-500'}>
-                          ${totals.change24Hrs} ({totals.change24HrsPct}%)
-                        </td>
-                      </tr>
-                      <tr>
-                        <td className="py-2">7 days</td>
-                        <td className={totals.change7DaysPct > 0 ? 'text-green-500' : 'text-red-500'}>
-                          ${totals.change7Days} ({totals.change7DaysPct}%)
-                        </td>
-                      </tr>
-                      <tr>
-                        <td className="py-2">30 days</td>
-                        <td className={totals.change30DaysPct > 0 ? 'text-green-500' : 'text-red-500'}>
-                          ${totals.change30Days} ({totals.change30DaysPct}%)
-                        </td>
-                      </tr>
-                      <tr>
-                        <td className="py-2">1 year</td>
-                        <td className={totals.change365DaysPct > 0 ? 'text-green-500' : 'text-red-500'}>
-                          ${totals.change365Days} ({totals.change365DaysPct}%)
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              ) : (
-                <p>Your portfolio is currently empty.</p>
-              )}
+              {!isError && !isLoading ? (
+                populatedHoldings?.length ? (
+                  <div className="text-left">
+                    <h3 className="uppercase">Performance</h3>
+                    <table>
+                      <tbody>
+                        <tr>
+                          <td className="py-2 pr-2">24 hours</td>
+                          <td className={totals.change24HrsPct > 0 ? 'text-green-500' : 'text-red-500'}>
+                            ${totals.change24Hrs} ({totals.change24HrsPct}%)
+                          </td>
+                        </tr>
+                        <tr>
+                          <td className="py-2">7 days</td>
+                          <td className={totals.change7DaysPct > 0 ? 'text-green-500' : 'text-red-500'}>
+                            ${totals.change7Days} ({totals.change7DaysPct}%)
+                          </td>
+                        </tr>
+                        <tr>
+                          <td className="py-2">30 days</td>
+                          <td className={totals.change30DaysPct > 0 ? 'text-green-500' : 'text-red-500'}>
+                            ${totals.change30Days} ({totals.change30DaysPct}%)
+                          </td>
+                        </tr>
+                        <tr>
+                          <td className="py-2">1 year</td>
+                          <td className={totals.change365DaysPct > 0 ? 'text-green-500' : 'text-red-500'}>
+                            ${totals.change365Days} ({totals.change365DaysPct}%)
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <p>Your portfolio is currently empty.</p>
+                )
+              ) : null}
               <div className="hidden lg:block">
                 <DoughnutChart holdings={populatedHoldings} />
               </div>
@@ -153,7 +150,7 @@ export default function Dashboard() {
                   </tr>
                 </thead>
                 <tbody className="bg-gray-700">
-                  {populatedHoldings.map(holding => (
+                  {populatedHoldings?.map(holding => (
                     <tr key={holding.symbol} className="border-b border-white">
                       <td className="py-2 pl-4 text-left">{holding.name}</td>
                       <td className="pr-4 text-right">${round(holding.price, 2)}</td>
@@ -209,7 +206,7 @@ export default function Dashboard() {
               </table>
             </div>
             <div className="bg-gray-900 flex pl-4 py-5">
-              <PortfolioFooter holdings={populatedHoldings} availableCoins={availableCoins} />
+              {!isError && !isLoading ? <PortfolioFooter holdings={populatedHoldings} availableCoins={availableCoins} /> : null}
             </div>
           </div>
         </>
