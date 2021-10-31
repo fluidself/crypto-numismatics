@@ -63,27 +63,28 @@ export default function Dashboard() {
   function renderError(error) {
     return (
       <>
-        <p>{`${error.status} error fetching ${error.type}:`}</p>
-        <code className="text-red-500">{JSON.stringify(error.info)}</code>
+        <p>{`${error.status ? error.status : ''} Error fetching ${error.type}`}</p>
+        <code className="text-red-500">{JSON.stringify(error.info, null, 2)}</code>
       </>
     );
   }
 
   return (
-    <div className="h-screen bg-gray-800">
+    <div className="h-screen bg-black bg-hero-pattern">
       <Navbar />
       {loading || isLoading ? (
         <FullPageSpinner />
       ) : (
         <>
-          <div className="text-white container mx-auto text-center mt-4 xl:w-1/2 l:w-2/3">
-            <div className="h-12 bg-gray-900"></div>
+          <div className="text-white container mx-auto text-center mt-4 xl:w-1/2 l:w-2/3 border border-white">
+            <div className="h-14 bg-gray-900"></div>
             <div className="bg-gray-700 flex justify-between py-4 px-4">
               <div className="text-left">
                 {isError && renderError(isError)}
                 {totals?.total ? (
                   <>
                     <h3 className="uppercase">Portfolio value</h3>
+                    <div className="h-px bg-blue-400 w-20"></div>
                     <p className="text-2xl pt-1">
                       ${totals.total ? round(totals.total, 2) : '0'}{' '}
                       <small className={totals.total ? 'block' : ''}>(₿{Number(totals.totalBTC) ? totals.totalBTC : '0'})</small>
@@ -95,6 +96,7 @@ export default function Dashboard() {
                 populatedHoldings?.length ? (
                   <div className="text-left">
                     <h3 className="uppercase">Performance</h3>
+                    <div className="h-px bg-blue-400 w-20"></div>
                     <table>
                       <tbody>
                         <tr>
@@ -136,9 +138,10 @@ export default function Dashboard() {
               <table className="min-w-full">
                 <thead className="bg-gray-900 border-b border-white">
                   <tr>
-                    <th className="py-2 pl-4 text-left">Name</th>
+                    <th className="py-2 pl-4 text-left lg:hidden">Symbol</th>
+                    <th className="py-2 pl-4 text-left hidden lg:table-cell">Name</th>
                     <th className="pr-4 text-right">Price</th>
-                    <th className="pr-4 text-right">24 hrs</th>
+                    <th className="pr-4 text-right hidden lg:table-cell">24 hrs</th>
                     <th className="pr-4 text-right hidden lg:table-cell">7 days</th>
                     <th className="pr-4 text-right hidden lg:table-cell">30 days</th>
                     <th className="pr-4 text-right hidden lg:table-cell">1 year</th>
@@ -152,9 +155,14 @@ export default function Dashboard() {
                 <tbody className="bg-gray-700">
                   {populatedHoldings?.map(holding => (
                     <tr key={holding.symbol} className="border-b border-white">
-                      <td className="py-2 pl-4 text-left">{holding.name}</td>
+                      <td className="py-2 pl-4 text-left lg:hidden">{holding.symbol}</td>
+                      <td className="py-2 pl-4 text-left hidden lg:table-cell">{holding.name}</td>
                       <td className="pr-4 text-right">${round(holding.price, 2)}</td>
-                      <td className={`pr-4 text-right ${holding.percent_change_24h > 0 ? 'text-green-500' : 'text-red-500'}`}>
+                      <td
+                        className={`pr-4 text-right hidden lg:table-cell ${
+                          holding.percent_change_24h > 0 ? 'text-green-500' : 'text-red-500'
+                        }`}
+                      >
                         {holding.percent_change_24h}%
                       </td>
                       <td
