@@ -72,7 +72,13 @@ export default function PortfolioFooter({ holdings = [], availableCoins }) {
               disabled={loading ? true : false}
             >
               {loading && <SpinnerIcon />}
-              {loading ? 'Adding' : 'Add coin'}
+              {loading ? (
+                'Adding'
+              ) : (
+                <>
+                  Add <span className="hidden lg:inline">&nbsp;holding</span>
+                </>
+              )}
             </button>
             <button className="ml-2 text-xs tracking-wider border rounded uppercase px-6" onClick={() => setAdding(false)}>
               Cancel
