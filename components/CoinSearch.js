@@ -8,7 +8,7 @@ export default function CoinSearch({ availableCoins = [] }) {
       <ReactSearchAutocomplete
         items={availableCoins}
         fuseOptions={{ keys: ['name', 'symbol'], shouldSort: false }}
-        placeholder="Search coins..."
+        placeholder="Asset"
         formatResult={formatResult}
         autoFocus
       />

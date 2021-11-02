@@ -39,7 +39,7 @@ export default function Navbar(props) {
           )}
           {session && (
             <div className="items-center flex">
-              <span>{session.user.name}</span>
+              <span className="truncate">{session.user.name}</span>
               <button className="rounded inline-flex items-center hover:text-blue-400 ml-4" onClick={logoutHandler}>
                 <LogoutIcon />
                 Log out

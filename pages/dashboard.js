@@ -76,16 +76,16 @@ export default function Dashboard() {
         <FullPageSpinner />
       ) : (
         <>
-          <div className="text-white container mx-auto text-center mt-4 xl:w-1/2 l:w-2/3 border border-white">
+          <div className="text-white container mx-auto text-center mt-4 xl:w-1/2 lg:w-5/6 border-t border-b md:border-l md:border-r border-white">
             <div className="h-14 bg-gray-900"></div>
             <div className="bg-gray-700 flex justify-between py-4 px-4">
               <div className="text-left">
                 {isError && renderError(isError)}
                 {totals?.total ? (
                   <>
-                    <h3 className="uppercase">Portfolio value</h3>
-                    <div className="h-px bg-blue-400 w-20"></div>
-                    <p className="text-2xl pt-1">
+                    <h3 className="uppercase">Total value</h3>
+                    <div className="h-px bg-blue-400 w-16 lg:w-20"></div>
+                    <p className="text-xl lg:text-2xl pt-1">
                       ${totals.total ? round(totals.total, 2) : '0'}{' '}
                       <small className={totals.total ? 'block' : ''}>(₿{Number(totals.totalBTC) ? totals.totalBTC : '0'})</small>
                     </p>
@@ -96,29 +96,41 @@ export default function Dashboard() {
                 populatedHoldings?.length ? (
                   <div className="text-left">
                     <h3 className="uppercase">Performance</h3>
-                    <div className="h-px bg-blue-400 w-20"></div>
+                    <div className="h-px bg-blue-400 w-16 lg:w-20"></div>
                     <table>
                       <tbody>
                         <tr>
-                          <td className="py-2 pr-2">24 hours</td>
+                          <td className="py-2 pr-2">
+                            <span className="md:hidden">1D</span>
+                            <span className="hidden md:inline">24 hours</span>
+                          </td>
                           <td className={totals.change24HrsPct > 0 ? 'text-green-500' : 'text-red-500'}>
                             ${totals.change24Hrs} ({totals.change24HrsPct}%)
                           </td>
                         </tr>
                         <tr>
-                          <td className="py-2">7 days</td>
+                          <td className="py-2">
+                            <span className="md:hidden">1W</span>
+                            <span className="hidden md:inline">7 days</span>
+                          </td>
                           <td className={totals.change7DaysPct > 0 ? 'text-green-500' : 'text-red-500'}>
                             ${totals.change7Days} ({totals.change7DaysPct}%)
                           </td>
                         </tr>
                         <tr>
-                          <td className="py-2">30 days</td>
+                          <td className="py-2">
+                            <span className="md:hidden">1M</span>
+                            <span className="hidden md:inline">30 days</span>
+                          </td>
                           <td className={totals.change30DaysPct > 0 ? 'text-green-500' : 'text-red-500'}>
                             ${totals.change30Days} ({totals.change30DaysPct}%)
                           </td>
                         </tr>
                         <tr>
-                          <td className="py-2">1 year</td>
+                          <td className="py-2">
+                            <span className="md:hidden">1Y</span>
+                            <span className="hidden md:inline">1 year</span>
+                          </td>
                           <td className={totals.change365DaysPct > 0 ? 'text-green-500' : 'text-red-500'}>
                             ${totals.change365Days} ({totals.change365DaysPct}%)
                           </td>
@@ -141,12 +153,15 @@ export default function Dashboard() {
                     <th className="py-2 pl-4 text-left lg:hidden">Symbol</th>
                     <th className="py-2 pl-4 text-left hidden lg:table-cell">Name</th>
                     <th className="pr-4 text-right">Price</th>
-                    <th className="pr-4 text-right hidden lg:table-cell">24 hrs</th>
+                    <th className="pr-4 text-right">
+                      <span className="lg:hidden">1D</span>
+                      <span className="hidden lg:inline">24 hrs</span>
+                    </th>
                     <th className="pr-4 text-right hidden lg:table-cell">7 days</th>
                     <th className="pr-4 text-right hidden lg:table-cell">30 days</th>
                     <th className="pr-4 text-right hidden lg:table-cell">1 year</th>
                     <th className="pr-4 text-right">Amount</th>
-                    <th className="pr-4 text-right">Value</th>
+                    <th className="pr-4 text-right hidden lg:table-cell">Value</th>
                     <th className="pr-4 text-right hidden lg:table-cell">Allocation</th>
                     <th></th>
                     <th></th>
@@ -158,11 +173,7 @@ export default function Dashboard() {
                       <td className="py-2 pl-4 text-left lg:hidden">{holding.symbol}</td>
                       <td className="py-2 pl-4 text-left hidden lg:table-cell">{holding.name}</td>
                       <td className="pr-4 text-right">${round(holding.price, 2)}</td>
-                      <td
-                        className={`pr-4 text-right hidden lg:table-cell ${
-                          holding.percent_change_24h > 0 ? 'text-green-500' : 'text-red-500'
-                        }`}
-                      >
+                      <td className={`pr-4 text-right ${holding.percent_change_24h > 0 ? 'text-green-500' : 'text-red-500'}`}>
                         {holding.percent_change_24h}%
                       </td>
                       <td
@@ -198,7 +209,7 @@ export default function Dashboard() {
                           <span>{holding.amount}</span>
                         )}
                       </td>
-                      <td className="pr-4 text-right">${round(holding.value, 2)}</td>
+                      <td className="pr-4 text-right hidden lg:table-cell">${round(holding.value, 2)}</td>
                       <td className="pr-4 text-right hidden lg:table-cell">{round(holding.allocation, 2)}%</td>
                       <td className="w-8 pl-2 ">
                         <button className="flex hover:text-blue-400" onClick={() => handleEditClick(holding.id)}>

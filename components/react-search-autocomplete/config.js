@@ -10,7 +10,7 @@ const defaultTheme = {
   fontFamily: 'Arial',
   iconColor: 'grey',
   lineColor: 'rgb(232, 234, 237)',
-  placeholderColor: 'grey',
+  placeholderColor: '#A3A3A3',
   zIndex: 0,
   clearIconMargin: '3px 8px 0 0',
   searchIconMargin: '0 0 0 16px',
