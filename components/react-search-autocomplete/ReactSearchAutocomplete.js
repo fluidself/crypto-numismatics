@@ -1,12 +1,11 @@
-import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
+import styled, { ThemeProvider } from 'styled-components';
 import PropTypes from 'prop-types';
 import Fuse from 'fuse.js';
 import { defaultTheme, defaultFuseOptions } from './config';
 import Results from './Results';
 import SearchInput from './SearchInput';
-import { ThemeProvider } from 'styled-components';
 import { debounce } from './utils';
-import styled from 'styled-components';
 
 export const DEFAULT_INPUT_DEBOUNCE = 200;
 export const MAX_RESULTS = 10;
@@ -15,7 +14,6 @@ export default function ReactSearchAutocomplete(props) {
   const {
     items,
     fuseOptions,
-    inputDebounce,
     onSearch,
     onHover,
     onFocus,
