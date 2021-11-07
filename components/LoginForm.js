@@ -6,19 +6,27 @@ import SpinnerIcon from './icons/SpinnerIcon';
 export default function LoginForm({ handleModal }) {
   const [formInput, updateFormInput] = useState({ username: '', password: '' });
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const router = useRouter();
 
   async function handleSubmit(event) {
     event.preventDefault();
     setLoading(true);
 
-    const { username, password } = formInput;
-    const result = await signIn('credentials', { redirect: false, username, password });
+    try {
+      const { username, password } = formInput;
+      const result = await signIn('credentials', { redirect: false, username, password });
 
-    if (!result.error) {
+      if (!result.error) {
+        setLoading(false);
+        handleModal('');
+        router.replace('/dashboard');
+      } else {
+        throw new Error(result.error);
+      }
+    } catch (error) {
+      setError(error.message);
       setLoading(false);
-      handleModal('');
-      router.replace('/dashboard');
     }
   }
 
@@ -53,6 +61,7 @@ export default function LoginForm({ handleModal }) {
           onChange={e => updateFormInput({ ...formInput, password: e.target.value })}
         />
       </div>
+      {error && <p className="text-red-600 mb-2">{error}</p>}
       <div className="flex items-center justify-between">
         <button
           className="bg-blue-400 hover:bg-blue-500 text-white py-2 px-4 rounded focus:shadow-outline uppercase text-sm tracking-wider inline-flex items-center"

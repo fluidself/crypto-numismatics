@@ -40,6 +40,8 @@ export default function SignupForm({ handleModal }) {
         setLoading(false);
         handleModal('');
         router.replace('/dashboard');
+      } else {
+        throw new Error(result.error);
       }
     } catch (error) {
       setError(error.message);
