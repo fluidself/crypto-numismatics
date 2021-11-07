@@ -32,7 +32,7 @@ export default function DeleteHolding({ holdings, holdingId }) {
       {loading ? (
         <SpinnerIcon />
       ) : (
-        <button className="flex hover:text-blue-400" onClick={handleDeleteHolding}>
+        <button className="flex hover:text-primary" onClick={handleDeleteHolding}>
           <TrashIcon />
         </button>
       )}
