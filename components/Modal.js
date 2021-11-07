@@ -17,11 +17,10 @@ export default function Modal({ type, children, handleModal }) {
     return () => window.removeEventListener('click', backdropHandler);
   }, [handleModal]);
 
-  const HEADINGS = {
-    login: 'Log in',
-    signup: 'Create your account',
-    holdings: 'Edit holdings',
-  };
+  // const HEADINGS = {
+  //   login: 'Log in',
+  //   signup: 'Create your account',
+  // };
 
   if (!isBrowser) return null;
 
@@ -37,12 +36,14 @@ export default function Modal({ type, children, handleModal }) {
         <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">
           &#8203;
         </span>
-        <div className="inline-block align-bottom border bg-white rounded-sm text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-          <div className="px-6 py-2 bg-gray-900 text-white flex justify-between">
-            {HEADINGS[type]}
-            <button onClick={() => handleModal('')}>&times;</button>
+        <div className="inline-block align-bottom border bg-base-100 rounded-sm text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+          <div className="px-6 py-2 flex justify-end">
+            {/* {HEADINGS[type]} */}
+            <button className="hover:text-primary" onClick={() => handleModal('')}>
+              &times;
+            </button>
           </div>
-          <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">{children}</div>
+          <div className="bg-base-100 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">{children}</div>
         </div>
       </div>
     </div>,

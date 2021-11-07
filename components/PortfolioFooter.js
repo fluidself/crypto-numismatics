@@ -1,8 +1,7 @@
 import { useState, useRef } from 'react';
 import { useSWRConfig } from 'swr';
-import CoinSearch from './CoinSearch';
+import Search from './Search';
 import AddIcon from './icons/AddIcon';
-import SpinnerIcon from './icons/SpinnerIcon';
 
 export default function PortfolioFooter({ holdings = [], availableCoins }) {
   const [adding, setAdding] = useState(false);
@@ -55,32 +54,15 @@ export default function PortfolioFooter({ holdings = [], availableCoins }) {
     <>
       {adding && (
         <form className="flex w-full lg:w-4/5 -m-1.5" onSubmit={handleSubmit}>
-          <CoinSearch availableCoins={availableCoins} />
-          <input
-            className="shadow appearance-none border rounded w-3/4 py-2 px-3 ml-2 mr-6 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            type="number"
-            required
-            min="0"
-            step="any"
-            placeholder="Amount"
-            ref={inputRef}
-          />
+          <div className="w-5/6">
+            <Search availableCoins={availableCoins} />
+          </div>
+          <input className="input input-bordered" type="number" required min="0" step="any" placeholder="Amount" ref={inputRef} />
           <div className="w-3/4 flex">
-            <button
-              className="bg-blue-400 hover:bg-blue-500 text-white px-6 rounded focus:shadow-outline uppercase text-xs tracking-wider inline-flex items-center"
-              type="submit"
-              disabled={loading ? true : false}
-            >
-              {loading && <SpinnerIcon />}
-              {loading ? (
-                'Adding'
-              ) : (
-                <>
-                  Add <span className="hidden lg:inline">&nbsp;holding</span>
-                </>
-              )}
+            <button className={`btn btn-primary ${loading && 'loading'}`} type="submit" disabled={loading ? true : false}>
+              Add <span className="hidden lg:inline">&nbsp;holding</span>
             </button>
-            <button className="ml-2 text-xs tracking-wider border rounded uppercase px-6" onClick={() => setAdding(false)}>
+            <button className="btn btn-outline" onClick={() => setAdding(false)}>
               Cancel
             </button>
           </div>
@@ -88,15 +70,12 @@ export default function PortfolioFooter({ holdings = [], availableCoins }) {
       )}
       {!adding &&
         (holdings.length ? (
-          <button className="rounded inline-flex items-center hover:text-blue-400" onClick={() => setAdding(true)}>
+          <button className="btn btn-ghost btn-sm inline-flex items-center" onClick={() => setAdding(true)}>
             <AddIcon />
             Add Holding
           </button>
         ) : (
-          <button
-            className="bg-blue-400 hover:bg-blue-500 text-white py-2 px-4 -m-1 rounded focus:shadow-outline uppercase text-sm tracking-wider"
-            onClick={() => setAdding(true)}
-          >
+          <button className="btn btn-primary" onClick={() => setAdding(true)}>
             Add your first coin
           </button>
         ))}

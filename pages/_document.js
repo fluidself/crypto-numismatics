@@ -3,7 +3,7 @@ import Document, { Html, Head, Main, NextScript } from 'next/document';
 class MainDocument extends Document {
   render() {
     return (
-      <Html>
+      <Html data-theme="black">
         <Head />
         <body>
           <Main />

@@ -33,14 +33,14 @@ export default function EditableCell({ amount: initialValue, holdingId, editHold
       ) : (
         <div className="flex items-center justify-end">
           <input
-            className="shadow appearance-none border rounded w-16 py-1 px-2 text-gray-700 bg-gray-300 leading-tight focus:shadow-outline mr-2"
+            className="input input-bordered bg-base-200 input-sm w-16"
             type="number"
             value={value}
             onChange={onChange}
             onKeyUp={onKeyUp}
             autoFocus
           />
-          <button className="flex hover:text-blue-400" onClick={onClick}>
+          <button className="flex hover:text-primary" onClick={onClick}>
             <CheckIcon />
           </button>
         </div>

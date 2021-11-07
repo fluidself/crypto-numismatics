@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { signIn } from 'next-auth/client';
 import { useRouter } from 'next/router';
-import SpinnerIcon from './icons/SpinnerIcon';
 
 async function createUser(username, password, passwordconfirm) {
   const response = await fetch('/api/auth/signup', {
@@ -50,13 +49,13 @@ export default function SignupForm({ handleModal }) {
   }
 
   return (
-    <form className="px-2 pt-6 pb-8 mb-4" onSubmit={handleSubmit}>
-      <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="username">
-          Username
+    <form className="px-2 pt-4 pb-4 mb-4" onSubmit={handleSubmit}>
+      <div className="form-control mb-2">
+        <label className="label" htmlFor="username">
+          <span className="label-text">Username</span>
         </label>
         <input
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          className="input input-bordered"
           id="username"
           type="text"
           required
@@ -66,12 +65,12 @@ export default function SignupForm({ handleModal }) {
           onChange={e => updateFormInput({ ...formInput, username: e.target.value })}
         />
       </div>
-      <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
-          Password
+      <div className="form-control mb-2">
+        <label className="label" htmlFor="password">
+          <span className="label-text">Password</span>
         </label>
         <input
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          className="input input-bordered"
           id="password"
           type="password"
           required
@@ -80,12 +79,12 @@ export default function SignupForm({ handleModal }) {
           onChange={e => updateFormInput({ ...formInput, password: e.target.value })}
         />
       </div>
-      <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="passwordconfirm">
-          Confirm Password
+      <div className="form-control mb-6">
+        <label className="label" htmlFor="passwordconfirm">
+          <span className="label-text">Confirm Password</span>
         </label>
         <input
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-1 leading-tight focus:outline-none focus:shadow-outline"
+          className="input input-bordered"
           id="passwordconfirm"
           type="password"
           required
@@ -94,15 +93,11 @@ export default function SignupForm({ handleModal }) {
           onChange={e => updateFormInput({ ...formInput, passwordconfirm: e.target.value })}
         />
       </div>
-      {error && <p className="text-red-600 mb-2">{error}</p>}
+      {error && <p className="text-error mb-2">{error}</p>}
       <div className="flex items-center justify-between">
-        <button
-          className="bg-blue-400 hover:bg-blue-500 text-white py-2 px-4 rounded focus:shadow-outline uppercase text-sm tracking-wider inline-flex items-center"
-          type="submit"
-          disabled={loading ? true : false}
-        >
-          {loading && <SpinnerIcon />}
-          {loading ? 'Creating' : 'Create account'}
+        {/* <button className="btn btn-primary px-6 inline-flex items-center" type="submit" disabled={loading ? true : false}> */}
+        <button className={`btn btn-primary px-6 ${loading && 'loading'}`} type="submit" disabled={loading ? true : false}>
+          Sign up
         </button>
       </div>
     </form>
