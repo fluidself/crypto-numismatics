@@ -16,14 +16,14 @@ export default NextAuth({
 
         if (!user) {
           client.close();
-          throw new Error('No user found!');
+          throw new Error('Invalid username or password');
         }
 
         const isValid = await verifyPassword(credentials.password, user.password);
 
         if (!isValid) {
           client.close();
-          throw new Error('Could not log you in!');
+          throw new Error('Invalid username or password');
         }
 
         client.close();
