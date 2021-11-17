@@ -71,6 +71,10 @@ export default function Dashboard() {
 
   const gain = 'text-success';
   const loss = 'text-error';
+  const gainBg = 'bg-success';
+  const lossBg = 'bg-error';
+  const gainIcon = '▲';
+  const lossIcon = '▼';
 
   return (
     <div className="h-screen bg-base-100">
@@ -88,7 +92,7 @@ export default function Dashboard() {
                   <>
                     <h3 className="uppercase">Total value</h3>
                     <div className="h-0.5 bg-primary w-16 lg:w-20"></div>
-                    <p className="text-xl lg:text-2xl pt-1">
+                    <p className="text-lg lg:text-xl pt-1 font-mono">
                       ${totals.total ? round(totals.total, 2) : '0'}{' '}
                       <small className={totals.total ? 'block' : ''}>(₿{Number(totals.totalBTC) ? totals.totalBTC : '0'})</small>
                     </p>
@@ -105,37 +109,53 @@ export default function Dashboard() {
                         <tr>
                           <td className="py-2 pr-2">
                             <span className="md:hidden">1D</span>
-                            <span className="hidden md:inline">24 hours</span>
+                            <span className="hidden md:inline uppercase text-sm">24 hrs</span>
                           </td>
-                          <td className={totals.change24HrsPct > 0 ? gain : loss}>
-                            ${totals.change24Hrs} ({totals.change24HrsPct}%)
+                          <td className={`md:pl-2 font-mono text-sm ${totals.change24HrsPct > 0 ? gain : loss}`}>
+                            ${totals.change24Hrs}{' '}
+                            <span className={`bg-opacity-20 rounded px-1 py-px ${totals.change24HrsPct > 0 ? gainBg : lossBg}`}>
+                              <span className="font-sans text-xs">{totals.change24HrsPct > 0 ? gainIcon : lossIcon}</span>
+                              {Math.abs(totals.change24HrsPct).toFixed(2)}%
+                            </span>
                           </td>
                         </tr>
                         <tr>
                           <td className="py-2">
                             <span className="md:hidden">1W</span>
-                            <span className="hidden md:inline">7 days</span>
+                            <span className="hidden md:inline uppercase text-sm">7 days</span>
                           </td>
-                          <td className={totals.change7DaysPct > 0 ? gain : loss}>
-                            ${totals.change7Days} ({totals.change7DaysPct}%)
+                          <td className={`md:pl-2 font-mono text-sm ${totals.change7DaysPct > 0 ? gain : loss}`}>
+                            ${totals.change7Days}{' '}
+                            <span className={`bg-opacity-20 rounded px-1 py-px ${totals.change7DaysPct > 0 ? gainBg : lossBg}`}>
+                              <span className="font-sans text-xs">{totals.change7DaysPct > 0 ? gainIcon : lossIcon}</span>
+                              {Math.abs(totals.change7DaysPct).toFixed(2)}%
+                            </span>
                           </td>
                         </tr>
                         <tr>
                           <td className="py-2">
                             <span className="md:hidden">1M</span>
-                            <span className="hidden md:inline">30 days</span>
+                            <span className="hidden md:inline uppercase text-sm">30 days</span>
                           </td>
-                          <td className={totals.change30DaysPct > 0 ? gain : loss}>
-                            ${totals.change30Days} ({totals.change30DaysPct}%)
+                          <td className={`md:pl-2 font-mono text-sm ${totals.change30DaysPct > 0 ? gain : loss}`}>
+                            ${totals.change30Days}{' '}
+                            <span className={`bg-opacity-20 rounded px-1 py-px ${totals.change30DaysPct > 0 ? gainBg : lossBg}`}>
+                              <span className="font-sans text-xs">{totals.change30DaysPct > 0 ? gainIcon : lossIcon}</span>
+                              {Math.abs(totals.change30DaysPct).toFixed(2)}%
+                            </span>
                           </td>
                         </tr>
                         <tr>
                           <td className="py-2">
                             <span className="md:hidden">1Y</span>
-                            <span className="hidden md:inline">1 year</span>
+                            <span className="hidden md:inline uppercase text-sm">1 year</span>
                           </td>
-                          <td className={totals.change365DaysPct > 0 ? gain : loss}>
-                            ${totals.change365Days} ({totals.change365DaysPct}%)
+                          <td className={`md:pl-2 font-mono text-sm ${totals.change365DaysPct > 0 ? gain : loss}`}>
+                            ${totals.change365Days}{' '}
+                            <span className={`bg-opacity-20 rounded px-1 py-px ${totals.change365DaysPct > 0 ? gainBg : lossBg}`}>
+                              <span className="font-sans text-xs">{totals.change365DaysPct > 0 ? gainIcon : lossIcon}</span>
+                              {Math.abs(totals.change365DaysPct).toFixed(2)}%
+                            </span>
                           </td>
                         </tr>
                       </tbody>
@@ -175,20 +195,32 @@ export default function Dashboard() {
                     <tr key={holding.symbol} className="border-b border-base-content">
                       <td className="py-2 pl-4 text-left lg:hidden">{holding.symbol}</td>
                       <td className="py-2 pl-4 text-left hidden lg:table-cell">{holding.name}</td>
-                      <td className="pr-4 text-right">${round(holding.price, 2)}</td>
-                      <td className={`pr-4 text-right ${holding.percent_change_24h > 0 ? gain : loss}`}>
+                      <td className="pr-4 text-right font-mono text-sm">${round(holding.price, 2)}</td>
+                      <td className={`pr-4 text-right font-mono text-sm ${holding.percent_change_24h > 0 ? gain : loss}`}>
                         {holding.percent_change_24h}%
                       </td>
-                      <td className={`pr-4 text-right hidden lg:table-cell ${holding.percent_change_7d > 0 ? gain : loss}`}>
+                      <td
+                        className={`pr-4 text-right hidden lg:table-cell font-mono text-sm ${
+                          holding.percent_change_7d > 0 ? gain : loss
+                        }`}
+                      >
                         {holding.percent_change_7d}%
                       </td>
-                      <td className={`pr-4 text-right hidden lg:table-cell ${holding.percent_change_30d > 0 ? gain : loss}`}>
+                      <td
+                        className={`pr-4 text-right hidden lg:table-cell font-mono text-sm ${
+                          holding.percent_change_30d > 0 ? gain : loss
+                        }`}
+                      >
                         {holding.percent_change_30d}%
                       </td>
-                      <td className={`pr-4 text-right hidden lg:table-cell ${holding.percent_change_365d > 0 ? gain : loss}`}>
+                      <td
+                        className={`pr-4 text-right hidden lg:table-cell font-mono text-sm ${
+                          holding.percent_change_365d > 0 ? gain : loss
+                        }`}
+                      >
                         {holding.percent_change_365d}%
                       </td>
-                      <td className="pr-4 text-right">
+                      <td className="pr-4 text-right font-mono text-sm">
                         {editing === holding.id ? (
                           <EditableCell
                             amount={holding.amount}
@@ -200,8 +232,8 @@ export default function Dashboard() {
                           <span>{holding.amount}</span>
                         )}
                       </td>
-                      <td className="pr-4 text-right hidden lg:table-cell">${round(holding.value, 2)}</td>
-                      <td className="pr-4 text-right hidden lg:table-cell">{round(holding.allocation, 2)}%</td>
+                      <td className="pr-4 text-right hidden lg:table-cell font-mono text-sm">${round(holding.value, 2)}</td>
+                      <td className="pr-4 text-right hidden lg:table-cell font-mono text-sm">{round(holding.allocation, 2)}%</td>
                       <td className="w-8 pl-2 ">
                         <button className="flex hover:text-primary" onClick={() => handleEditClick(holding.id)}>
                           <EditIcon />
