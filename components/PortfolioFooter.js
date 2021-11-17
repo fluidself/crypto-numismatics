@@ -53,16 +53,28 @@ export default function PortfolioFooter({ holdings = [], availableCoins }) {
   return (
     <>
       {adding && (
-        <form className="flex w-full lg:w-4/5 -m-1.5" onSubmit={handleSubmit}>
-          <div className="w-5/6">
+        <form className="flex w-full lg:w-4/5 lg:-m-2" onSubmit={handleSubmit}>
+          <div className="w-4/5">
             <Search availableCoins={availableCoins} />
           </div>
-          <input className="input input-bordered" type="number" required min="0" step="any" placeholder="Amount" ref={inputRef} />
-          <div className="w-3/4 flex">
-            <button className={`btn btn-primary ${loading && 'loading'}`} type="submit" disabled={loading ? true : false}>
+          <input
+            className="input input-sm lg:input-md input-bordered mx-2"
+            type="number"
+            required
+            min="0"
+            step="any"
+            placeholder="Amount"
+            ref={inputRef}
+          />
+          <div className="w-3/4 flex lg:ml-2">
+            <button
+              className={`btn btn-sm lg:btn-md btn-primary ${loading && 'loading'}`}
+              type="submit"
+              disabled={loading ? true : false}
+            >
               Add <span className="hidden lg:inline">&nbsp;holding</span>
             </button>
-            <button className="btn btn-outline" onClick={() => setAdding(false)}>
+            <button className="btn btn-sm lg:btn-md btn-outline ml-1 lg:ml-2" onClick={() => setAdding(false)}>
               Cancel
             </button>
           </div>
