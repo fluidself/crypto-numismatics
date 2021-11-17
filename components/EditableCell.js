@@ -33,7 +33,7 @@ export default function EditableCell({ amount: initialValue, holdingId, editHold
       ) : (
         <div className="flex items-center justify-end">
           <input
-            className="input input-bordered bg-base-200 input-sm w-16"
+            className="input input-bordered bg-base-200 input-sm w-12 px-1 mr-1"
             type="number"
             value={value}
             onChange={onChange}

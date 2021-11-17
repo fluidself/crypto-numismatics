@@ -80,7 +80,7 @@ export default function Dashboard() {
       ) : (
         <>
           <div className="container mx-auto text-center mt-4 xl:w-1/2 lg:w-5/6 border-t border-b md:border-l md:border-r border-base-content">
-            <div className="h-14 bg-base-100 border-white border-b"></div>
+            <div className="h-14 bg-base-100 border-b border-base-content"></div>
             <div className="bg-base-200 flex justify-between py-4 px-4">
               <div className="text-left">
                 {isError && renderError(isError)}

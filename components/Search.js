@@ -96,10 +96,10 @@ export default function Search(props) {
 
   return (
     <div className="relative">
-      <div className="absolute flex flex-col w-full pl-2">
+      <div className="absolute flex flex-col w-full lg:pl-2">
         <input
           type="search"
-          className="input input-bordered w-full"
+          className="input input-sm lg:input-md input-bordered w-full"
           spellCheck={false}
           onBlur={() => setResults([])}
           value={searchString}
