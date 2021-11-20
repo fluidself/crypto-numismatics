@@ -95,7 +95,7 @@ export default function Search(props) {
   };
 
   return (
-    <div className="relative">
+    <div className="relative w-full">
       <div className="absolute flex flex-col w-full lg:pl-2">
         <input
           type="search"

@@ -6,7 +6,6 @@ import Modal from '../components/Modal';
 import LoginForm from '../components/LoginForm';
 import SignupForm from '../components/SignupForm';
 import FullPageSpinner from '../components/FullPageSpinner';
-import SpinnerIcon from '../components/icons/SpinnerIcon';
 
 export default function LandingPage() {
   const [modal, setModal] = useState('');
@@ -27,13 +26,18 @@ export default function LandingPage() {
   async function handleDemo() {
     setProcessingDemo(true);
 
-    const username = 'demo';
-    const password = 'password';
-    const result = await signIn('credentials', { redirect: false, username, password });
+    try {
+      const username = 'demo';
+      const password = 'password';
+      const result = await signIn('credentials', { redirect: false, username, password });
 
-    if (!result.error) {
+      if (!result.error) {
+        setProcessingDemo(false);
+        router.replace('/dashboard');
+      }
+    } catch (error) {
+      console.log(error.message);
       setProcessingDemo(false);
-      router.replace('/dashboard');
     }
   }
 
@@ -57,12 +61,11 @@ export default function LandingPage() {
               Create account
             </button>
             <button
-              className="w-48 py-2 btn btn-outline inline-flex items-center justify-center"
+              className={`w-48 py-2 btn btn-outline ${processingDemo && 'loading'}`}
               onClick={handleDemo}
               disabled={processingDemo ? true : false}
             >
-              {processingDemo && <SpinnerIcon />}
-              {processingDemo ? 'Logging in' : 'View demo'}
+              View demo
             </button>
           </div>
           {modal && (

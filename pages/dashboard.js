@@ -173,7 +173,7 @@ export default function Dashboard() {
               <table className="min-w-full">
                 <thead className="bg-base-100 border-b border-t border-base-content uppercase text-sm">
                   <tr>
-                    <th className="py-2 pl-4 text-left lg:hidden">Symbol</th>
+                    <th className="py-2 pl-2 text-left lg:hidden">Symbol</th>
                     <th className="py-2 pl-4 text-left hidden lg:table-cell">Name</th>
                     <th className="pr-4 text-right">Price</th>
                     <th className="pr-4 text-right">
@@ -193,7 +193,7 @@ export default function Dashboard() {
                 <tbody className="bg-base-200">
                   {populatedHoldings?.map(holding => (
                     <tr key={holding.symbol} className="border-b border-base-content">
-                      <td className="py-2 pl-4 text-left lg:hidden">{holding.symbol}</td>
+                      <td className="py-2 pl-2 text-left lg:hidden">{holding.symbol}</td>
                       <td className="py-2 pl-4 text-left hidden lg:table-cell">{holding.name}</td>
                       <td className="pr-4 text-right font-mono text-sm">${round(holding.price, 2)}</td>
                       <td className={`pr-4 text-right font-mono text-sm ${holding.percent_change_24h > 0 ? gain : loss}`}>
@@ -234,12 +234,12 @@ export default function Dashboard() {
                       </td>
                       <td className="pr-4 text-right hidden lg:table-cell font-mono text-sm">${round(holding.value, 2)}</td>
                       <td className="pr-4 text-right hidden lg:table-cell font-mono text-sm">{round(holding.allocation, 2)}%</td>
-                      <td className="w-8 pl-2 ">
+                      <td className="w-8 pl-2">
                         <button className="flex hover:text-primary" onClick={() => handleEditClick(holding.id)}>
                           <EditIcon />
                         </button>
                       </td>
-                      <td className="w-8 pl-2 ">
+                      <td className="w-8 pl-2 pr-2 lg:pr-4">
                         <DeleteHolding holdings={populatedHoldings} holdingId={holding.id} />
                       </td>
                     </tr>
@@ -247,7 +247,7 @@ export default function Dashboard() {
                 </tbody>
               </table>
             </div>
-            <div className="bg-base-100 flex pl-2 py-5">
+            <div className="bg-base-100 flex pl-1 lg:pl-2 py-5">
               {!isError && !isLoading ? <PortfolioFooter holdings={populatedHoldings} availableCoins={availableCoins} /> : null}
             </div>
           </div>

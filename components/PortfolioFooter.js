@@ -58,7 +58,7 @@ export default function PortfolioFooter({ holdings = [], availableCoins }) {
             <Search availableCoins={availableCoins} />
           </div>
           <input
-            className="input input-sm lg:input-md input-bordered mx-2"
+            className="input input-sm lg:input-md input-bordered w-1/2 lg:mx-2"
             type="number"
             required
             min="0"
