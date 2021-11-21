@@ -6,8 +6,9 @@ import AddIcon from './icons/AddIcon';
 export default function PortfolioFooter({ holdings = [], availableCoins }) {
   const [adding, setAdding] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [searchString, setSearchString] = useState('');
   const { mutate } = useSWRConfig();
-  const inputRef = useRef();
+  const amountRef = useRef();
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -30,8 +31,8 @@ export default function PortfolioFooter({ holdings = [], availableCoins }) {
 
       setTimeout(() => {
         mutate('/api/holdings', { holdings: optimisticNewHoldings }, false);
-        inputRef.current.value = '';
-        document.querySelector('.clear-icon').click();
+        amountRef.current.value = '';
+        setSearchString('');
         setLoading(false);
       }, 500);
 
@@ -55,7 +56,7 @@ export default function PortfolioFooter({ holdings = [], availableCoins }) {
       {adding && (
         <form className="flex w-full lg:w-4/5 lg:-m-2" onSubmit={handleSubmit}>
           <div className="w-4/5">
-            <Search availableCoins={availableCoins} />
+            <Search availableCoins={availableCoins} searchString={searchString} setSearchString={setSearchString} />
           </div>
           <input
             className="input input-sm lg:input-md input-bordered w-1/2 lg:mx-2"
@@ -64,7 +65,7 @@ export default function PortfolioFooter({ holdings = [], availableCoins }) {
             min="0"
             step="any"
             placeholder="Amount"
-            ref={inputRef}
+            ref={amountRef}
           />
           <div className="w-3/4 flex lg:ml-2">
             <button

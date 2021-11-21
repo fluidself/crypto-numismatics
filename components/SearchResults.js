@@ -1,7 +1,7 @@
 import React from 'react';
 
 export default function SearchResults(props) {
-  const { results, setSearchString, maxResults, resultStringKeyName, keyLocation } = props;
+  const { results, setSearchString, maxResults, keyLocation } = props;
 
   const formatResult = item => `${item.name} (${item.symbol})`;
 

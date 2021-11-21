@@ -16,14 +16,17 @@ const FUSE_OPTIONS = {
 };
 
 export default function Search(props) {
-  const { availableCoins: items, resultStringKeyName, inputSearchString } = props;
+  const { availableCoins: items, searchString, setSearchString } = props;
+
+  const [results, setResults] = useState([]);
+  const [keyLocation, setKeyLocation] = useState(null);
+
+  useEffect(() => {
+    setSearchString('');
+  }, []);
 
   const fuse = new Fuse(items, FUSE_OPTIONS);
   fuse.setCollection(items);
-
-  const [searchString, setSearchString] = useState(inputSearchString);
-  const [results, setResults] = useState([]);
-  const [keyLocation, setKeyLocation] = useState(null);
 
   const callOnSearch = keyword => {
     let newResults = [];
@@ -44,10 +47,6 @@ export default function Search(props) {
   );
 
   useEffect(() => {
-    setSearchString(inputSearchString);
-  }, [inputSearchString]);
-
-  useEffect(() => {
     searchString?.length > 0 && results?.length > 0 && setResults(fuseResults(searchString));
     setKeyLocation(null);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -62,7 +61,6 @@ export default function Search(props) {
       e.preventDefault();
       if (keyLocation === null || keyLocation === 0) {
         setKeyLocation(results.length - 1);
-        setSearchString(results[results.length - 1][resultStringKeyName]);
       } else if (keyLocation !== null) {
         handleSelect(results[results.length - 1]);
         setKeyLocation(keyLocation - 1);
@@ -106,15 +104,10 @@ export default function Search(props) {
           onChange={handleSetSearchString}
           onKeyDown={handleKeyDown}
           placeholder="Asset"
+          autoComplete="off"
           autoFocus
         />
-        <SearchResults
-          results={results}
-          setSearchString={setSearchString}
-          maxResults={MAX_RESULTS}
-          resultStringKeyName={resultStringKeyName}
-          keyLocation={keyLocation}
-        />
+        <SearchResults results={results} setSearchString={setSearchString} maxResults={MAX_RESULTS} keyLocation={keyLocation} />
       </div>
     </div>
   );

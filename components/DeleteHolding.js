@@ -15,7 +15,7 @@ export default function DeleteHolding({ holdings, holdingId }) {
 
       setTimeout(() => {
         mutate('/api/holdings', { holdings: newHoldings }, false);
-      }, 500);
+      }, 600);
       await fetch(`/api/holdings/${holdingId}`, {
         method: 'DELETE',
       });

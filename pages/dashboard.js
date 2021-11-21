@@ -46,7 +46,7 @@ export default function Dashboard() {
         setTimeout(() => {
           mutate('/api/holdings', { holdings: optimisticNewHoldings }, false);
           setEditing(false);
-        }, 500);
+        }, 600);
 
         await holdingRequestPromise;
 
