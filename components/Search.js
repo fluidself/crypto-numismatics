@@ -23,7 +23,7 @@ export default function Search(props) {
 
   useEffect(() => {
     setSearchString('');
-  }, []);
+  }, [setSearchString]);
 
   const fuse = new Fuse(items, FUSE_OPTIONS);
   fuse.setCollection(items);

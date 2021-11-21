@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useSession, getSession } from 'next-auth/client';
+import { getSession } from 'next-auth/client';
 import { useSWRConfig } from 'swr';
 import { useDashboardData, round, deleteHolding, updateHolding } from '../lib/utils';
 import FullPageSpinner from '../components/FullPageSpinner';
@@ -11,7 +11,6 @@ import EditIcon from '../components/icons/EditIcon';
 import Navbar from '../components/Navbar';
 
 export default function Dashboard() {
-  const [, loading] = useSession();
   const { availableCoins, populatedHoldings, totals, isLoading, isError } = useDashboardData();
   const [editing, setEditing] = useState(false);
   const [processingEdit, setProcessingEdit] = useState(false);
@@ -79,7 +78,7 @@ export default function Dashboard() {
   return (
     <div className="h-screen bg-base-100">
       <Navbar />
-      {loading || isLoading ? (
+      {isLoading ? (
         <FullPageSpinner />
       ) : (
         <>
