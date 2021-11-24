@@ -17,11 +17,6 @@ export default function Modal({ type, children, handleModal }) {
     return () => window.removeEventListener('click', backdropHandler);
   }, [handleModal]);
 
-  // const HEADINGS = {
-  //   login: 'Log in',
-  //   signup: 'Create your account',
-  // };
-
   if (!isBrowser) return null;
 
   return ReactDOM.createPortal(
@@ -38,8 +33,7 @@ export default function Modal({ type, children, handleModal }) {
         </span>
         <div className="inline-block align-bottom border bg-base-100 rounded-sm text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
           <div className="px-6 py-2 flex justify-end">
-            {/* {HEADINGS[type]} */}
-            <button className="hover:text-primary" onClick={() => handleModal('')}>
+            <button className="hover:text-primary" data-testid="modal-close-button" onClick={() => handleModal('')}>
               &times;
             </button>
           </div>
