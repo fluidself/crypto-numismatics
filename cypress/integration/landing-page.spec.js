@@ -15,8 +15,8 @@ describe('Landing page', () => {
     // TODO: test error handling
     // invalid params
     // already taken username
-    cy.findByLabelText('Username').type('demo');
-    cy.findByLabelText('Password').type('password');
+    cy.findByLabelText('Username').type(Cypress.env('username'));
+    cy.findByLabelText('Password').type(Cypress.env('password'));
     // TODO: also listen for signin request here?
     cy.findByLabelText('Confirm Password')
       .type('password{enter}')
@@ -26,13 +26,14 @@ describe('Landing page', () => {
   });
 
   it('user can log in', () => {
-    // open modal from navbar
-    // mock login request?
-    // should be redirected to /dashboard
+    cy.findByRole('button', { name: /log in/i }).click();
+    cy.findByLabelText('Username').type(Cypress.env('username'));
+    cy.findByLabelText('Password')
+      .type(Cypress.env('password'))
+      .get('.btn-primary')
+      .contains(/log in/i)
+      .click()
+      .location('pathname')
+      .should('equal', '/dashboard');
   });
-
-  // it('user can view demo', () => {
-  //   // mock login request?
-  //   // should be redirected to /dashboard
-  // });
 });
