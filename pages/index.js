@@ -32,7 +32,7 @@ export default function LandingPage() {
   return (
     <div className="h-screen bg-base-100">
       <Navbar handleModal={setModal} isLandingPage={true} />
-      <div className="container mx-auto text-center mt-48 font-light">
+      <div className="container mx-auto text-center mt-24 md:mt-48 font-light">
         <h1 className="text-4xl mb-2 text-primary">All your cryptocurrencies in one place</h1>
         <p className="mb-2">
           Crypto Numismatics provides a simple, user-friendly overview of your digital currency holdings. Signing up is free and
