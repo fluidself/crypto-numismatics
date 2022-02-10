@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import { signIn, getSession } from 'next-auth/client';
+import { signIn, getSession } from 'next-auth/react';
 import Navbar from '../components/Navbar';
 import Modal from '../components/Modal';
 import LoginForm from '../components/LoginForm';

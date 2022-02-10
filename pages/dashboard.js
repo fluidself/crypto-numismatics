@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { getSession } from 'next-auth/client';
+import { getSession } from 'next-auth/react';
 import { useSWRConfig } from 'swr';
 import { useDashboardData, round, deleteHolding, updateHolding } from '../lib/utils';
 import FullPageSpinner from '../components/FullPageSpinner';

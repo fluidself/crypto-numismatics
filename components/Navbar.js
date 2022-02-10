@@ -1,11 +1,11 @@
-import { useSession, signOut } from 'next-auth/client';
+import { useSession, signOut } from 'next-auth/react';
 import CopyleftIcon from './icons/CopyleftIcon';
 import LoginIcon from './icons/LoginIcon';
 import SignupIcon from './icons/SignupIcon';
 import LogoutIcon from './icons/LogoutIcon';
 
 export default function Navbar({ handleModal }) {
-  const [session, loading] = useSession();
+  const { data: session, status } = useSession();
 
   function logoutHandler() {
     signOut();
@@ -18,7 +18,7 @@ export default function Navbar({ handleModal }) {
         <p className="hidden lg:block">Crypto Numismatics</p>
       </div>
       <div>
-        {!session && !loading && (
+        {!session && status !== 'loading' && (
           <>
             <button className="btn btn-ghost btn-sm" onClick={() => handleModal('login')}>
               <LoginIcon />

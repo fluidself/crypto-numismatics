@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { signIn } from 'next-auth/client';
+import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/router';
 
 export default function LoginForm({ handleModal }) {

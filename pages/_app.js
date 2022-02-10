@@ -1,4 +1,4 @@
-import { Provider } from 'next-auth/client';
+import { SessionProvider } from 'next-auth/react';
 import Head from 'next/head';
 
 import '../styles/globals.css';
@@ -19,9 +19,9 @@ function MyApp({ Component, pageProps }) {
         <meta name="msapplication-TileColor" content="#da532c" />
         <meta name="theme-color" content="#ffffff"></meta>
       </Head>
-      <Provider session={pageProps.session}>
+      <SessionProvider session={pageProps.session}>
         <Component {...pageProps} />
-      </Provider>
+      </SessionProvider>
     </>
   );
 }
