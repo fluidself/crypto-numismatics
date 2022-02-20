@@ -4,7 +4,7 @@ import Head from 'next/head';
 import '../styles/globals.css';
 import '../styles/css-loader.css';
 
-function MyApp({ Component, pageProps }) {
+function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   return (
     <>
       <Head>
@@ -19,7 +19,7 @@ function MyApp({ Component, pageProps }) {
         <meta name="msapplication-TileColor" content="#da532c" />
         <meta name="theme-color" content="#ffffff"></meta>
       </Head>
-      <SessionProvider session={pageProps.session}>
+      <SessionProvider session={session}>
         <Component {...pageProps} />
       </SessionProvider>
     </>
